@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .logo {
+            max-width: 150px;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .otp-container {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .otp-code {
+            font-size: 24px;
+            letter-spacing: 3px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #777;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Replace with your logo -->
+        <!-- <img src="https://yourwebsite.com/logo.png" alt="Company Logo" class="logo"> -->
+    </div>
+
+    <div class="content">
+        <h1>Hi <%= name %>,</h1>
+        <p>Thank you for registering with us. Please use the following OTP to verify your email address:</p>
+
+        <div class="otp-container">
+            <p>Your verification code is:</p>
+            <div class="otp-code"><%= otp %></div>
+            <p>This code will expire in <%= OTP_EXPIRY_SECONDS %> minutes.</p>
+        </div>
+
+        <p>If you didn't request this code, please ignore this email or contact support if you have questions.</p>
+
+        <p>Thanks,<br>The <%= APP_NAME %> Team</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; <%= new Date().getFullYear() %> <%= APP_NAME %>. All rights reserved.</p>
+        <p>If you're having trouble with the button above, copy and paste the OTP code directly.</p>
+    </div>
+</body>
+</html>
