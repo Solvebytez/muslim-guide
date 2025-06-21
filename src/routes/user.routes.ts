@@ -2,6 +2,9 @@ import { Router } from "express";
 import { loginValidator, otpVerifyValidation, registerValidator } from "../validations/user.validator";
 import { adminLogin, googleLogin, refreshToken, register, userLogin, userLogout, userProfile, verifyOtp } from "../controllers/user.controllers";
 import { isAuthenticated } from "../middleware/isAuthenticated";
+import { hotelImage } from "../utils/uploads";
+import { ValidationError } from "../config/error.config";
+
 
 const router = Router();
 router.post("/register", registerValidator,register);
@@ -10,6 +13,8 @@ router.post('/login',loginValidator,userLogin)
 
 router.get("/get-user",isAuthenticated,userProfile)
 router.post('/refresh-token',refreshToken)
+
+
 
 router.post("/google-login",googleLogin)
 

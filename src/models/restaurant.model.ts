@@ -8,14 +8,15 @@ interface ILocation {
 
 interface IRestaurant extends Document {
   name: string;
-  cuisine: string;
+  cuisine: string[];
+  image: Types.ObjectId | null;
   address: string;
   suppliers?: string[];
   rating: number;
   distance?: number;
   distanceUnit?: string;
   userId: Types.ObjectId;
-  isApproved: boolean;
+  isApproved: string;
   location: ILocation; // GeoJSON location
   googleMapsPlaceId?: string; // Unique ID from Google Maps
   googleMapsUrl?: string; // Direct URL to the place
@@ -29,8 +30,13 @@ const RestaurantSchema = new Schema<IRestaurant>({
     required: true,
     trim: true
   },
+  image: {
+    type: Schema.Types.ObjectId,  
+    default:null,
+    ref:"Image"
+  },
   cuisine: {
-    type: String,
+    type: [String],
     required: true,
     trim: true
   },
@@ -64,8 +70,10 @@ const RestaurantSchema = new Schema<IRestaurant>({
     required: true
   },
   isApproved: {
-    type: Boolean,
-    default: false
+    type: String,
+    required: true,
+    enum: ['pending','approved','rejected']
+   
   },
   location: {
     type: {

@@ -4,6 +4,7 @@ import connectDb from "./config/db.config";
 import { config } from "./config/env.config";
 import { errorHandler } from "./middleware/errorHandler";
 import { userRoutes } from "./routes/user.routes";
+import { hotelRoutes } from "./routes/addHotels.routes";
 
 
 const app = express();
@@ -20,7 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+
 app.use("/api/v1", userRoutes);
+app.use("/api/v1", hotelRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
