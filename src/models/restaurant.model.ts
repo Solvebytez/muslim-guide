@@ -6,7 +6,7 @@ interface ILocation {
   coordinates: [number, number]; // [longitude, latitude]
 }
 
-interface IRestaurant extends Document {
+export interface IRestaurant extends Document {
   name: string;
   cuisine: string[];
   image: Types.ObjectId | null;
@@ -20,7 +20,7 @@ interface IRestaurant extends Document {
   location: ILocation; // GeoJSON location
   googleMapsPlaceId?: string; // Unique ID from Google Maps
   googleMapsUrl?: string; // Direct URL to the place
- 
+  inWishlists?: Types.ObjectId[]; // Array of wishlists that include this restaurant
 }
 
 // Mongoose schema
@@ -30,6 +30,11 @@ const RestaurantSchema = new Schema<IRestaurant>({
     required: true,
     trim: true
   },
+  inWishlists: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Wishlist',
+    default: []
+  }],
   image: {
     type: Schema.Types.ObjectId,  
     default:null,

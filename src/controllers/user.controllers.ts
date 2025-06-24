@@ -384,6 +384,7 @@ export const refreshToken = asyncHandler(
 export const userLogout = asyncHandler(
   async (req: RequestWithUser, res: Response) => {
     const userId = req.user._id;
+    console.log("userId logout", userId)
     const token =
     req.cookies?.isl_admin_access_token ||
     req.cookies?.isl_user_access_token ||
