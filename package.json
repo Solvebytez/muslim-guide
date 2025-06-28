@@ -16,6 +16,7 @@
     "@types/mongoose": "^5.11.96",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^1.30.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
@@ -30,6 +31,7 @@
     "nodemon": "^3.1.10"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.3",

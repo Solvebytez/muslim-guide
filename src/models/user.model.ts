@@ -49,7 +49,7 @@ const userSchema = new Schema<IUser>({
     },
     avatar:{
         type:Schema.Types.ObjectId,
-        ref:"File"
+        ref:"Image"
     },
     otp:{
         type:String,

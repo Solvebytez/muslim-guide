@@ -10,6 +10,7 @@ import { Wishlist } from "../models/wishlist.model";
 import { Types } from "mongoose";
 import { NextFunction } from "express";
 import { randomUUID } from "crypto";
+import { sendMail } from "../utils/sendMail";
 
 export const addHotels = asyncHandler(async (req, res, next) => {
   try {
@@ -18,8 +19,24 @@ export const addHotels = asyncHandler(async (req, res, next) => {
       }
     
       const userId = (req as any).user?._id;
+
+      if (!userId) {
+        throw new ValidationError("User ID is required");
+      }
+
+     const user = await User.findById(userId);
+
+      if (!user) {
+        throw new ValidationError("User not found");
+      }
+
+      if (user.status!== "active") {
+        throw new ValidationError("User is Blocked");
+      }
+
+      // Assuming req.body contains the necessary data for creating a restaurant
     
-      const { hotelData, phoneNumber, cuisines } = req.body;
+      const { hotelData, phoneNumber, cuisines,contactName,contactEmail } = req.body;
       if (!hotelData || !phoneNumber || !cuisines) {
         return res.status(400).json({
           success: false,
@@ -30,12 +47,14 @@ export const addHotels = asyncHandler(async (req, res, next) => {
       const parsedHotelData = JSON.parse(hotelData);
       const parsedCuisines = JSON.parse(cuisines);
     
-      console.log( parsedHotelData,parsedCuisines,phoneNumber,userId);
-
+     
     const newRestaurant = new Restaurant({
       name: parsedHotelData.name,
       cuisine: parsedCuisines,
       address: parsedHotelData.formatted_address,
+      contactEmail: contactEmail,
+      contactName: contactName,
+      phoneNumber: phoneNumber,
       rating: parsedHotelData.rating,
       userId: userId, // Replace with actual user ID (e.g., from req.user._id)
       isApproved: "pending", // Default status
@@ -319,6 +338,224 @@ export const getNearestRestaurantsSimple = asyncHandler(async (req, res, next) =
 
 
 })
+
+export const getAllPendingRestaurantsForAdmin = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+
+  if (user.role!== "admin") {
+    throw new ValidationError("User is not an admin");
+  }
+
+  const query = { isApproved: "pending" };
+
+  const allPendingResturent = await Restaurant.find(query)
+  .sort({ createdAt: -1 })
+ .populate('image','url').populate('userId','name email')
+
+ console.log("allPendingResturent", allPendingResturent)
+
+ apiSuccessResponse(res, "successful", httpCode.OK, {
+  allPendingResturent
+ })
+
+})
+
+export const getApprovedRestaurantsForAdmin = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+
+  if (user.role!== "admin") {
+    throw new ValidationError("User is not an admin");
+  }
+
+  const query = { isApproved: "approved" };
+
+  const allApprovedResturent = await Restaurant.find(query)
+ .sort({ createdAt: -1 })
+ .populate('image','url').populate('userId','name email')
+
+
+ apiSuccessResponse(res, "successful", httpCode.OK, {
+  allApprovedResturent
+ })
+
+})
+
+export const getRejectedRestaurantsForAdmin = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+  if (user.role!== "admin") {
+    throw new ValidationError("User is not an admin");
+  }
+
+  const query = { isApproved: "rejected" };
+
+  const allRejectedResturent = await Restaurant.find(query)
+.sort({ createdAt: -1 })
+.populate('image','url').populate('userId','name email')
+
+ apiSuccessResponse(res, "successful", httpCode.OK, {
+  allRejectedResturent
+ })
+})
+
+export const approveRestaurant = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+
+  if (user.role !== "admin") {
+    throw new ValidationError("User is not an admin");
+  }
+
+  const restaurantId = req.params.restaurantId;
+
+  console.log("restaurantId", restaurantId)
+
+  const restaurant = await Restaurant.findById(restaurantId).populate("userId", "email name");
+
+  if (!restaurant) {
+    throw new ValidationError("Restaurant not found");
+  }
+
+  if (restaurant.isApproved === "approved") {
+    throw new ValidationError("Restaurant is already approved");
+  }
+
+
+  restaurant.isApproved = "approved";
+  console.log("restaurant", restaurant.isApproved)
+  await restaurant.save();
+
+  sendMail(
+    (restaurant.userId as any).email, // ✅ safer than .toString()
+    "Your restaurant has been approved",
+    "approved-resturent",
+    {
+      name: restaurant.name,
+      cuisine: restaurant.cuisine,
+      isApproved: restaurant.isApproved,
+      address: restaurant.address,
+      googleMapsUrl: restaurant.googleMapsUrl
+    }
+  );
+
+  apiSuccessResponse(res, "successful", httpCode.OK, {
+    restaurant
+  });
+});
+
+
+
+export const rejectRestaurant = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+
+  if (user.role!== "admin") {
+    throw new ValidationError("User is not an admin");
+  }
+
+  const restaurantId = req.params.restaurantId;
+
+  const restaurant = await Restaurant.findById(restaurantId).populate("userId", "email name");;
+
+  if (!restaurant) {
+    throw new ValidationError("Restaurant not found");
+  }
+
+  restaurant.isApproved = "rejected";
+
+  await restaurant.save();
+
+  sendMail(
+    (restaurant.userId as any).email, // ✅ safer than.toString()
+    "Your restaurant has been rejected",
+    "rejected-resturent",
+    {
+      name: restaurant.name,
+      cuisine: restaurant.cuisine,
+      isApproved: restaurant.isApproved,
+      address: restaurant.address,
+      googleMapsUrl: restaurant.googleMapsUrl
+    }
+  )
+
+  apiSuccessResponse(res, "successful", httpCode.OK, {
+    restaurant
+  })
+})
+
+export const deleteRestaurant = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new ValidationError("User not found");
+  } 
+
+  if(user.role!== "admin") {
+    throw new ValidationError("User is not an admin");
+  }
+
+  const restaurantId = req.params.restaurantId;
+
+  const restaurant = await Restaurant.findById(restaurantId);
+
+  if (!restaurant) {
+    throw new ValidationError("Restaurant not found");
+  }
+
+  await restaurant.deleteOne();
+
+  apiSuccessResponse(res, "successful", httpCode.OK, {
+    restaurant
+  })
+
+})
+
 
 // Helper function to calculate distance between two points (Haversine formula)
 function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {

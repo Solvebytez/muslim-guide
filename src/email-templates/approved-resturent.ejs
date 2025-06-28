@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f8f8f8;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .detail-row {
+            margin-bottom: 15px;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 120px;
+        }
+        .status-approved {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Restaurant Information</h1>
+    </div>
+    <div class="content">
+        <div class="detail-row">
+            <span class="label">Name:</span>
+            <span><%= name %></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Cuisines:</span>
+            <span><%= cuisine.join(', ') %></span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Status:</span>
+            <span class="status-<%= isApproved %>">
+                <%= isApproved.charAt(0).toUpperCase() + isApproved.slice(1) %>
+            </span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="label">Address:</span>
+            <span><%= address %></span>
+        </div>
+        
+        <% if (googleMapsUrl) { %>
+        <div class="detail-row">
+            <a href="<%= googleMapsUrl %>" target="_blank">View on Google Maps</a>
+        </div>
+        <% } %>
+    </div>
+</body>
+</html>
