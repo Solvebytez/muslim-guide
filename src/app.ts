@@ -14,10 +14,11 @@ const app = express();
 const port = config.PORT|| 5000;
 
 const allowedOrigins = [
-    "http://localhost:3000",      
-    "http://localhost:8081",       // ✅ React Native (Expo / Android emulator)
-    undefined                      // ✅ Allow undefined origin for Postman, curl, or mobile apps that don't send origin
-  ];
+  "http://localhost:3000",
+  "http://localhost:8081",
+  "https://muslim-guide-admin.vercel.app", // ✅ Your live frontend
+  undefined
+];
   
   app.use(cors({
     origin: (origin, callback) => {
