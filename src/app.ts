@@ -13,31 +13,27 @@ import cookieParser from "cookie-parser";
 const app = express();
 const port = config.PORT|| 5000;
 
-const allowedOrigins = [  
-  "https://muslim-guide-admin.vercel.app",
-  "http://localhost:3000",
-  "http://localhost:8081",
-  "https://muslim-guide-apl7.onrender.com",
- 
+const allowedOrigins = [
+  "https://muslim-guide-admin.vercel.app",  // ✅ Frontend (Vercel)
+  "http://localhost:3000",                  // ✅ Local dev frontend
+  "http://localhost:8081",                  // Optional mobile dev
+  "https://muslim-guide-apl7.onrender.com", // ✅ Backend (self-call)
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or Postman)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`Blocked by CORS: ${origin}`);
-      callback(new Error("Not allowed by CORS"));
-    }
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // ✅ Allow Postman/mobile apps
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    console.warn(`❌ Blocked by CORS: ${origin}`);
+    return callback(new Error("Not allowed by CORS"));
   },
-  credentials: true,
+  credentials: true, // ✅ REQUIRED for cookie sharing
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['set-cookie', 'date', 'authorization'] // Added more headers for debugging
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  exposedHeaders: ["set-cookie"], // ✅ Optional: helps with debugging cookies
+  optionsSuccessStatus: 200       // ✅ Prevents legacy browser preflight issues
 }));
+
 
 app.use(cookieParser());
 app.use(express.json());

@@ -210,27 +210,28 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: "7d" }
   );
 
+  const isProd = process.env.NODE_ENV === "production";
+
   res.cookie("isl_session_marker", "1", {
-    httpOnly: false,               // Must be accessible to middleware
-    secure: true,                  // Required for SameSite=None
-    sameSite: "lax",              // Required for cross-site
-    maxAge: 24 * 60 * 60 * 1000,   // 1 day
+    httpOnly: false,               // Middleware must read it
+    secure: isProd,                // true in prod
+    sameSite: "none",              // ✅ Must be "none" for cross-site
+    maxAge: 24 * 60 * 60 * 1000,
     path: "/",
   });
   
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "lax",              // Always 'none' for cross-origin
+    secure: isProd,
+    sameSite: "none",              // ✅ Must be "none" for cross-site
     maxAge: 24 * 60 * 60 * 1000,
     path: "/",
-  
   });
   
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
-    secure: true,
-    sameSite: "lax",              // Always 'none' for cross-origin
+    secure: isProd,
+    sameSite: "none",              // ✅ Must be "none" for cross-site
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
@@ -379,13 +380,14 @@ export const refreshToken = asyncHandler(
       }
     );
 
+    const isProd = process.env.NODE_ENV === "production";
+
     res.cookie("isl_admin_access_token", newAccessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",              // Always 'none' for cross-origin
+      secure: isProd,
+      sameSite: "none",              // ✅ Must be "none" for cross-site
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-    
     });
     
 
