@@ -212,6 +212,14 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
 
   const isRenderEnvironment = req.hostname.includes('onrender.com');
 
+  res.cookie("isl_session_marker", "1", {
+    httpOnly: false, // ✅ Must be readable by middleware
+    secure: true,
+    sameSite: "none", // ✅ Required for cross-site
+    maxAge: 24 * 60 * 60 * 1000,
+    path: "/",
+  });
+
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
     secure: true, // ALWAYS true for Render (they use HTTPS)
@@ -373,11 +381,15 @@ export const refreshToken = asyncHandler(
       }
     );
 
+    const isRenderEnvironment = req.hostname.includes('onrender.com');
+
     res.cookie("isl_admin_access_token", newAccessToken, {
       httpOnly: true,
-      secure: config.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true, // ALWAYS true for Render (they use HTTPS)
+      sameSite: isRenderEnvironment ? "none" : "lax", // none for cross-site
       maxAge: 24 * 60 * 60 * 1000,
+      path: "/",
+      // Explicitly DO NOT set domain for Render
     });
 
     apiSuccessResponse(res, "Login successful", httpCode.OK, {
