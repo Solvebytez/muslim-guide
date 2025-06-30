@@ -213,7 +213,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("isl_session_marker", "1", {
     httpOnly: false,               // Must be accessible to middleware
     secure: true,                  // Required for SameSite=None
-    sameSite: "none",              // Required for cross-site
+    sameSite: "lax",              // Required for cross-site
     maxAge: 24 * 60 * 60 * 1000,   // 1 day
     path: "/",
   });
@@ -221,7 +221,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
     secure: true,
-    sameSite: "none",              // Always 'none' for cross-origin
+    sameSite: "lax",              // Always 'none' for cross-origin
     maxAge: 24 * 60 * 60 * 1000,
     path: "/",
   
@@ -230,7 +230,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "none",              // Always 'none' for cross-origin
+    sameSite: "lax",              // Always 'none' for cross-origin
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
