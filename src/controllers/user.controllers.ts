@@ -172,38 +172,27 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     throw new ValidationError("Validation Error", errors.array());
   }
+  
   const { email, password, adminToken } = req.body;
 
-  const decoded = jwt.verify(adminToken, config.ADMIN_API_TOKEN);
-
-
-
-  if (!decoded) {
-    throw new ValidationError("Invalid token");
+  if (adminToken !== config.ADMIN_API_TOKEN) {
+    return res.status(403).json({ message: "Unauthorized admin access" });
   }
 
-  const user = await User.findOne({
-    email: (decoded as any).email,
-  }).select("+password");
-  console.log("user", user); // Add this line to log the decoded token t
-  if (!user) {
-    throw new ValidationError("User not found");
-  }
-  console.log("decoded", user); // Add this line to log the decoded token t
-
-  if(!user.password){
-    throw new ValidationError("User not found");
-  }
-
-    const isPasswordValid = bcrypt.compareSync(password, user?.password);
-    if (!isPasswordValid) {
-      throw new ValidationError("Invalid password");
-    }
-
-    if(user.role !== "admin"){
-      throw new ValidationError("Only admin can login");
-    }
+  const user = await User.findOne({ email }).select("+password");
   
+  if (!user || !user.password) {
+    throw new ValidationError("User not found");
+  }
+
+  const isPasswordValid = bcrypt.compareSync(password, user.password);
+  if (!isPasswordValid) {
+    throw new ValidationError("Invalid password");
+  }
+
+  if (user.role !== "admin") {
+    throw new ValidationError("Only admin can login");
+  }
 
   if (user.status === "blocked") {
     throw new ValidationError("User is not active");
@@ -212,39 +201,34 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   const accesstoken = jwt.sign(
     { _id: user._id, email, role: user.role },
     config.JWT_ACCESS_SECRET,
-    {
-      expiresIn: "1d",
-    }
+    { expiresIn: "1d" }
   );
-
-
 
   const refreshToken = jwt.sign(
     { _id: user._id, email, role: user.role },
     config.JWT_REFRESH_SECRET,
-    {
-      expiresIn: "7d",
-    }
+    { expiresIn: "7d" }
   );
 
-  const isProd = process.env.NODE_ENV === "production";
+  // Critical cookie fixes (keeping original variable names)
+  const isProduction = process.env.NODE_ENV === "production";
 
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
-    secure: isProd,               // ✅ dynamically handle dev/prod
-    sameSite: "none",             // ✅ needed for cross-site
-    maxAge: 24 * 60 * 60 * 1000,
-    path: "/",                    // ✅ good practice
-    ...(isProd && { domain: "muslim-guide-apl7.onrender.com" }),
+    secure: isProduction, // ✅ Force HTTPS in production
+    sameSite: isProduction ? "none" : "lax", // 'none' for cross-site
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    path: "/",
+    domain: isProduction ? ".onrender.com" : undefined, // For Render
   });
   
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
-    secure: isProd,
-    sameSite: "none",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: "/",
-    ...(isProd && { domain: "muslim-guide-apl7.onrender.com" }),
+    domain: isProduction ? ".onrender.com" : undefined,
   });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {

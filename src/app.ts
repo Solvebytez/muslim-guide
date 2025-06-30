@@ -14,11 +14,11 @@ const app = express();
 const port = config.PORT|| 5000;
 
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:8081",
-  "https://muslim-guide-admin.vercel.app", // ✅ Your live frontend
-  undefined
-];
+    "http://localhost:3000",      
+    "http://localhost:8081",
+    "https://muslim-guide-apl7.onrender.com", // Your Render backend (optional)
+    undefined                
+  ];
   
   app.use(cors({
     origin: (origin, callback) => {
@@ -29,9 +29,11 @@ const allowedOrigins = [
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['set-cookie'] // Explicitly expose set-cookie header
   }));
-app.use(cookieParser()); // 👈 This is required to access req.cookies
+  app.use(cookieParser()); // 👈 This is required to access req.cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
