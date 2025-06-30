@@ -227,19 +227,24 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
     }
   );
 
+  const isProd = process.env.NODE_ENV === "production";
+
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
-    secure: false,
-    sameSite: "none", // ❗ "lax" won't work cross-site
-    maxAge: 24 * 60 * 60 * 1000,   
-
+    secure: isProd,               // ✅ dynamically handle dev/prod
+    sameSite: "none",             // ✅ needed for cross-site
+    maxAge: 24 * 60 * 60 * 1000,
+    path: "/",                    // ✅ good practice
+    ...(isProd && { domain: "muslim-guide-apl7.onrender.com" }),
   });
-
+  
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
-    secure: false,
-    sameSite: "none", // ❗ "lax" won't work cross-site
+    secure: isProd,
+    sameSite: "none",
     maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
+    ...(isProd && { domain: "muslim-guide-apl7.onrender.com" }),
   });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
