@@ -31,7 +31,7 @@ const allowedOrigins = [
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   }));
-  app.use(cookieParser()); // 👈 This is required to access req.cookies
+app.use(cookieParser()); // 👈 This is required to access req.cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
