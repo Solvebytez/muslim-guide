@@ -14,26 +14,33 @@ const app = express();
 const port = config.PORT|| 5000;
 
 const allowedOrigins = [
-    "http://localhost:3000",      
-    "http://localhost:8081",
-    "https://muslim-guide-apl7.onrender.com", // Your Render backend (optional)
-    undefined                
-  ];
-  
-  app.use(cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['set-cookie'] // Explicitly expose set-cookie header
-  }));
-  app.use(cookieParser()); // 👈 This is required to access req.cookies
+  "http://localhost:3000",
+  "http://localhost:8081",
+  "https://muslim-guide-apl7.onrender.com",
+  "https://muslim-guide-admin.vercel.app"
+  // Add your production frontend URL when ready
+  // "https://yourproductionfrontend.com"
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`Blocked by CORS: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['set-cookie', 'date', 'authorization'] // Added more headers for debugging
+}));
+
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

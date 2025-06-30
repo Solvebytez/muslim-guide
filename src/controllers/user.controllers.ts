@@ -210,25 +210,23 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: "7d" }
   );
 
-  // Critical cookie fixes (keeping original variable names)
-  const isProduction = process.env.NODE_ENV === "production";
+  const isRenderEnvironment = req.hostname.includes('onrender.com');
 
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
-    secure: isProduction, // ✅ Force HTTPS in production
-    sameSite: isProduction ? "none" : "lax", // 'none' for cross-site
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    secure: true, // ALWAYS true for Render (they use HTTPS)
+    sameSite: isRenderEnvironment ? "none" : "lax", // none for cross-site
+    maxAge: 24 * 60 * 60 * 1000,
     path: "/",
-    domain: isProduction ? ".onrender.com" : undefined, // For Render
+    // Explicitly DO NOT set domain for Render
   });
   
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    secure: true,
+    sameSite: isRenderEnvironment ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
-    domain: isProduction ? ".onrender.com" : undefined,
   });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
