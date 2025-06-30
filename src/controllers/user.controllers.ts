@@ -210,29 +210,27 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: "7d" }
   );
 
-  const isRenderEnvironment = req.hostname.includes('onrender.com');
-
   res.cookie("isl_session_marker", "1", {
-    httpOnly: false, // ✅ Must be readable by middleware
-    secure: true,
-    sameSite: "none", // ✅ Required for cross-site
-    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: false,               // Must be accessible to middleware
+    secure: true,                  // Required for SameSite=None
+    sameSite: "none",              // Required for cross-site
+    maxAge: 24 * 60 * 60 * 1000,   // 1 day
     path: "/",
   });
-
+  
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
-    secure: true, // ALWAYS true for Render (they use HTTPS)
-    sameSite: isRenderEnvironment ? "none" : "lax", // none for cross-site
+    secure: true,
+    sameSite: "none",              // Always 'none' for cross-origin
     maxAge: 24 * 60 * 60 * 1000,
     path: "/",
-    // Explicitly DO NOT set domain for Render
+  
   });
   
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: isRenderEnvironment ? "none" : "lax",
+    sameSite: "none",              // Always 'none' for cross-origin
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
@@ -381,16 +379,15 @@ export const refreshToken = asyncHandler(
       }
     );
 
-    const isRenderEnvironment = req.hostname.includes('onrender.com');
-
     res.cookie("isl_admin_access_token", newAccessToken, {
       httpOnly: true,
-      secure: true, // ALWAYS true for Render (they use HTTPS)
-      sameSite: isRenderEnvironment ? "none" : "lax", // none for cross-site
+      secure: true,
+      sameSite: "none",              // Always 'none' for cross-origin
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      // Explicitly DO NOT set domain for Render
+    
     });
+    
 
     apiSuccessResponse(res, "Login successful", httpCode.OK, {
       ...user.toObject(),

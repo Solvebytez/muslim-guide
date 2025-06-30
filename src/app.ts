@@ -18,6 +18,8 @@ const allowedOrigins = [
   "https://muslim-guide-admin.vercel.app",
   "http://localhost:3000",
   "http://localhost:8081",
+  "https://muslim-guide-apl7.onrender.com",
+  undefined,
   // Add your production frontend URL when ready
   // "https://yourproductionfrontend.com"
 ];
