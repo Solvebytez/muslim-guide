@@ -17,7 +17,7 @@ const allowedOrigins = [
   "https://muslim-guide-admin.vercel.app",  // ✅ Frontend (Vercel)
   "http://localhost:3000",                  // ✅ Local dev frontend
   "http://localhost:8081",                  // Optional mobile dev
-  "https://muslim-guide-apl7.onrender.com", // ✅ Backend (self-call)
+ 
 ];
 
 app.use(cors({

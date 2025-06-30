@@ -212,29 +212,31 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
 
   const isProd = process.env.NODE_ENV === "production";
 
-  res.cookie("isl_session_marker", "1", {
-    httpOnly: false,               // Middleware must read it
-    secure: isProd,                // true in prod
-    sameSite: "none",              // ✅ Must be "none" for cross-site
-    maxAge: 24 * 60 * 60 * 1000,
-    path: "/",
-  });
-  
-  res.cookie("isl_admin_access_token", accesstoken, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: "none",              // ✅ Must be "none" for cross-site
-    maxAge: 24 * 60 * 60 * 1000,
-    path: "/",
-  });
-  
-  res.cookie("isl_admin_refresh_token", refreshToken, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: "none",              // ✅ Must be "none" for cross-site
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/",
-  });
+console.log("isProd", isProd);
+
+res.cookie("isl_session_marker", "1", {
+  httpOnly: false,               // Middleware can read it
+  secure: isProd,                // true in production
+  sameSite: "none",              // ✅ Required for cross-site
+  maxAge: 24 * 60 * 60 * 1000,   // 1 day
+  path: "/",
+});
+
+res.cookie("isl_admin_access_token", accesstoken, {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: "none",              // ✅ Required for cross-site
+  maxAge: 24 * 60 * 60 * 1000,
+  path: "/",
+});
+
+res.cookie("isl_admin_refresh_token", refreshToken, {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: "none",              // ✅ Fixed here
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: "/",
+});
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
     accesstoken,
@@ -385,7 +387,7 @@ export const refreshToken = asyncHandler(
     res.cookie("isl_admin_access_token", newAccessToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "none",              // ✅ Must be "none" for cross-site
+     sameSite:"none",         // ✅ Must be "none" for cross-site
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
