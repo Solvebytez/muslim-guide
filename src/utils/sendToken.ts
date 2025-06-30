@@ -30,7 +30,7 @@ export const setTokenCookie = (
   return res.cookie(tokenName, token, {
     httpOnly: true,
     secure: config.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none", // ❗ "lax" won't work cross-site
     maxAge:
       tokenName === "isl_user_access_token"
         ? 60 * 60 * 24 * 1000

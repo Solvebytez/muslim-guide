@@ -230,7 +230,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("isl_admin_access_token", accesstoken, {
     httpOnly: true,
     secure: config.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "none", // ❗ "lax" won't work cross-site
     maxAge: 24 * 60 * 60 * 1000,   
 
   });
@@ -238,7 +238,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   res.cookie("isl_admin_refresh_token", refreshToken, {
     httpOnly: true,
     secure: config.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "none", // ❗ "lax" won't work cross-site
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
