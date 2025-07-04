@@ -559,30 +559,37 @@ export const unblockUser = asyncHandler(async (req: RequestWithUser, res: Respon
 export const userLogout = asyncHandler(
   async (req: RequestWithUser, res: Response) => {
     const userId = req.user._id;
-    console.log("userId logout", userId)
+
     const token =
-    req.cookies?.isl_admin_access_token ||
-    req.cookies?.isl_user_access_token ||
-    req.cookies?.isl_vendor_access_token ||
-    req.headers.authorization?.split(" ")?.[1];
+      req.cookies?.isl_admin_access_token ||
+      req.cookies?.isl_user_access_token ||
+      req.cookies?.isl_vendor_access_token ||
+      req.headers.authorization?.split(" ")?.[1];
 
     if (!token) {
       throw new ValidationError("No token found");
     }
 
+    const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: "none" as const,
+      path: "/",
+      domain: ".muslimcompass.io",
+    };
+
+    // ✅ Clear all relevant cookies (must match how they were set)
     res.clearCookie("isl_user_access_token");
     res.clearCookie("isl_user_refresh_token");
     res.clearCookie("isl_vendor_access_token");
     res.clearCookie("isl_vendor_refresh_token");
-    res.clearCookie("isl_admin_access_token");
-    res.clearCookie("isl_admin_refresh_token");
+    res.clearCookie("isl_admin_access_token", cookieOptions);
+    res.clearCookie("isl_admin_refresh_token", cookieOptions);
+    res.clearCookie("isl_session_marker", { ...cookieOptions, httpOnly: false });
 
-    const user = await User.findById(userId);
-    if (!user) {
-      throw new ValidationError("User not found");
-    }
-
-    await BlacklistToken.create({ token: token });
+    // ✅ Blacklist current access token
+    await BlacklistToken.create({ token });
 
     apiSuccessResponse(res, "User logged out!", httpCode.OK);
   }
