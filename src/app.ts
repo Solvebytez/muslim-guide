@@ -14,7 +14,8 @@ const app = express();
 const port = config.PORT|| 5000;
 
 const allowedOrigins = [
-  "https://muslim-guide-admin.vercel.app",  // ✅ Frontend (Vercel)
+  "https://muslim-guide-admin.vercel.app",
+  "https://admin.muslimcompass.io",
   "http://localhost:3000",                  // ✅ Local dev frontend
   "http://localhost:8081",                  // Optional mobile dev
  
