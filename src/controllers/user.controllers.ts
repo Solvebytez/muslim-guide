@@ -210,9 +210,9 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
     { expiresIn: "7d" }
   );
 
-  const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 
-console.log("isProd", isProd);
+console.log("isProd", isProd,"process.env.RENDER",process.env.RENDER
 
 res.cookie("isl_session_marker", "1", {
   httpOnly: false,               // Middleware can read it
@@ -385,7 +385,7 @@ export const refreshToken = asyncHandler(
       }
     );
 
-    const isProd = process.env.NODE_ENV === "production";
+    const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 
     res.cookie("isl_admin_access_token", newAccessToken, {
       httpOnly: true,
