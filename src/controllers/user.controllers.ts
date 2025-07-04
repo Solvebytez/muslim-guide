@@ -220,6 +220,7 @@ res.cookie("isl_session_marker", "1", {
   sameSite: "none",              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,   // 1 day
   path: "/",
+  domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_access_token", accesstoken, {
@@ -228,6 +229,7 @@ res.cookie("isl_admin_access_token", accesstoken, {
   sameSite: "none",              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,
   path: "/",
+  domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_refresh_token", refreshToken, {
@@ -236,6 +238,7 @@ res.cookie("isl_admin_refresh_token", refreshToken, {
   sameSite: "none",              // ✅ Fixed here
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",
+  domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
@@ -390,6 +393,7 @@ export const refreshToken = asyncHandler(
      sameSite:"none",         // ✅ Must be "none" for cross-site
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
+      domain: ".muslimcompass.io", // ✅ Set for root domain
     });
     
 
