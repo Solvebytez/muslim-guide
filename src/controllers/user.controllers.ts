@@ -212,7 +212,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
 
   const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 
-console.log("isProd", isProd,"process.env.RENDER",process.env.RENDER
+console.log("isProd", isProd,"process.env.RENDER",process.env.RENDER)
 
 res.cookie("isl_session_marker", "1", {
   httpOnly: false,               // Middleware can read it
