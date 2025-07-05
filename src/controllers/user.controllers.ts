@@ -88,6 +88,8 @@ export const verifyOtp = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const userLogin = asyncHandler(async (req: Request, res: Response) => {
+
+  console.log("user login", req.body)
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new ValidationError("Validation Error", errors.array());
