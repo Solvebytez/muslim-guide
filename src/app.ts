@@ -15,23 +15,31 @@ const port = config.PORT|| 5000;
 
 const allowedOrigins = [
   "https://admin.muslimcompass.io",
-  "http://localhost:3000",                  // ✅ Local dev frontend
-  "http://localhost:8081",                  // Optional mobile dev
- 
+  "http://localhost:3000",   
+  "http://localhost:8081", 
+  "*"
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // ✅ Allow Postman/mobile apps
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (!origin) {
+      // ✅ Allow requests with no origin (native apps, curl, Postman, etc.)
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // ❌ Block everything else
     console.warn(`❌ Blocked by CORS: ${origin}`);
     return callback(new Error("Not allowed by CORS"));
   },
-  credentials: true, // ✅ REQUIRED for cookie sharing
+  credentials: true, // ✅ Required if using cookies or HTTP auth
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  exposedHeaders: ["set-cookie"], // ✅ Optional: helps with debugging cookies
-  optionsSuccessStatus: 200       // ✅ Prevents legacy browser preflight issues
+  exposedHeaders: ["set-cookie"], // ✅ Expose cookie headers for debugging
+  optionsSuccessStatus: 200       // ✅ Some legacy browsers choke on 204
 }));
 
 
