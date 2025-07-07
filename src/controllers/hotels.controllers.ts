@@ -189,8 +189,6 @@ export const getPendingHotelsByUser = asyncHandler(async (req, res, next) => {
 interface CuisineGroups {
   [key: string]: IRestaurant[];
 }
-
-
 export const getApprovedHotels = asyncHandler(async (req, res, next) => {
   const userId = (req as any).user?._id;
   if (!userId) {
@@ -202,10 +200,12 @@ export const getApprovedHotels = asyncHandler(async (req, res, next) => {
     throw new ValidationError("User not found");
   }
 
-
   const pageNumber = parseInt(req.body?.pageNumber as string) || 1;
   const pageSize = 3;
   const skip = (pageNumber - 1) * pageSize;
+  const cuisinsName = req.body?.cuisinsName || 'all';
+
+  console.log("cuisinsName.....", cuisinsName);
 
   // Fetch user's wishlist
   const wishlist = await Wishlist.findOne({ user: userId }).select("restaurants");
@@ -213,48 +213,124 @@ export const getApprovedHotels = asyncHandler(async (req, res, next) => {
     wishlist?.restaurants.map((id) => id.toString()) || []
   );
 
-// Step 1: Fetch approved restaurants
-const allRestaurants = await Restaurant.find({ isApproved: 'approved' }).sort({ createdAt: -1 }).populate('image');
+  // Step 1: Fetch approved restaurants with optional cuisine filter
+  const query: any = { isApproved: 'approved' };
+  if (cuisinsName && cuisinsName !== 'all') {
+    query.cuisine = cuisinsName;
+  }
 
-// Step 2: Group by cuisine
-const grouped: Record<string, IRestaurant[]|any> = {};
+  const allRestaurants = await Restaurant.find(query).sort({ createdAt: -1 }).populate('image');
 
-allRestaurants.forEach((restaurant) => {
+  // Step 2: Group by cuisine
+  const grouped: Record<string, IRestaurant[]|any> = {};
 
-  const isInWishlist = wishlistRestaurantIds.has((restaurant._id as Types.ObjectId).toString());
+  allRestaurants.forEach((restaurant) => {
+    const isInWishlist = wishlistRestaurantIds.has((restaurant._id as Types.ObjectId).toString());
+    const restaurantWithFlag = {
+      ...restaurant.toObject(),
+      isInWishlist,
+    };
 
-  const restaurantWithFlag = {
-    ...restaurant.toObject(),
-    isInWishlist,
+    restaurant.cuisine.forEach((cuisine) => {
+      if (!grouped[cuisine]) grouped[cuisine] = [];
+      grouped[cuisine].push(restaurantWithFlag);
+    });
+  });
+
+  // Step 3: Convert to array of cuisine groups
+  let allCuisineGroups = Object.entries(grouped).map(([cuisine, restaurants]) => ({
+    _id: randomUUID(),
+    cuisine,
+    restaurants,
+    totalCount: restaurants.length,
+  }));
+
+  // If a specific cuisine was requested, filter the groups to only include that cuisine
+  if (cuisinsName && cuisinsName !== 'all') {
+    allCuisineGroups = allCuisineGroups.filter(group => group.cuisine === cuisinsName);
+  }
+
+  // Step 4: Apply pagination to the cuisine groups
+  const paginatedGroups = allCuisineGroups.slice(skip, skip + pageSize);
+
+  // Step 5: Add pagination metadata
+  const response = {
+    current_page: pageNumber,
+    hasNextPage: skip + pageSize < allCuisineGroups.length,
+    totalCuisines: allCuisineGroups.length,
+    groups: paginatedGroups,
   };
 
-  restaurant.cuisine.forEach((cuisine) => {
-    if (!grouped[cuisine]) grouped[cuisine] = [];
-    grouped[cuisine].push(restaurantWithFlag);
-  });
+  return apiSuccessResponse(res, "successful", httpCode.OK, response);
 });
 
-// Step 3: Convert to array of cuisine groups
-const allCuisineGroups = Object.entries(grouped).map(([cuisine, restaurants]) => ({
-  _id: randomUUID(), // ✅ Truly unique ID
-  cuisine,
-  restaurants,
-  totalCount: restaurants.length,
-}));
+// export const getApprovedHotels = asyncHandler(async (req, res, next) => {
+//   const userId = (req as any).user?._id;
+//   if (!userId) {
+//     throw new ValidationError("User ID is required");
+//   }
+  
+//   const user = await User.findById(userId);
+//   if (!user) {
+//     throw new ValidationError("User not found");
+//   }
 
-// Step 4: Apply pagination to the cuisine groups
-const paginatedGroups = allCuisineGroups.slice(skip, skip + pageSize);
 
-// Step 5: Add pagination metadata
-const response = {
-  current_page: pageNumber,
-  hasNextPage: skip + pageSize < allCuisineGroups.length,
-  totalCuisines: allCuisineGroups.length,
-  groups: paginatedGroups,
-};
+//   const pageNumber = parseInt(req.body?.pageNumber as string) || 1;
+//   const pageSize = 3;
+//   const skip = (pageNumber - 1) * pageSize;
+//   const cuisinsName = req.body?.cuisinsName || 'all';
 
-return apiSuccessResponse(res, "successful", httpCode.OK, response);
-});
+//   console.log("cuisinsName.....", cuisinsName)
+
+//   // Fetch user's wishlist
+//   const wishlist = await Wishlist.findOne({ user: userId }).select("restaurants");
+//   const wishlistRestaurantIds = new Set(
+//     wishlist?.restaurants.map((id) => id.toString()) || []
+//   );
+
+// // Step 1: Fetch approved restaurants
+// const allRestaurants = await Restaurant.find({ isApproved: 'approved' }).sort({ createdAt: -1 }).populate('image');
+
+// // Step 2: Group by cuisine
+// const grouped: Record<string, IRestaurant[]|any> = {};
+
+// allRestaurants.forEach((restaurant) => {
+
+//   const isInWishlist = wishlistRestaurantIds.has((restaurant._id as Types.ObjectId).toString());
+
+//   const restaurantWithFlag = {
+//     ...restaurant.toObject(),
+//     isInWishlist,
+//   };
+
+//   restaurant.cuisine.forEach((cuisine) => {
+//     if (!grouped[cuisine]) grouped[cuisine] = [];
+//     grouped[cuisine].push(restaurantWithFlag);
+//   });
+// });
+
+// // Step 3: Convert to array of cuisine groups
+// const allCuisineGroups = Object.entries(grouped).map(([cuisine, restaurants]) => ({
+//   _id: randomUUID(), // ✅ Truly unique ID
+//   cuisine,
+//   restaurants,
+//   totalCount: restaurants.length,
+// }));
+
+// // Step 4: Apply pagination to the cuisine groups
+// const paginatedGroups = allCuisineGroups.slice(skip, skip + pageSize);
+
+// // Step 5: Add pagination metadata
+// const response = {
+//   current_page: pageNumber,
+//   hasNextPage: skip + pageSize < allCuisineGroups.length,
+//   totalCuisines: allCuisineGroups.length,
+//   groups: paginatedGroups,
+// };
+
+// return apiSuccessResponse(res, "successful", httpCode.OK, response);
+// });
 
 
 
