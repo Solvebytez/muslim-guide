@@ -11,6 +11,7 @@ import {
   getApprovedHotels,
   getApprovedHotelsByUser,
   getApprovedRestaurantsForAdmin,
+  getCuisineList,
   getNearestRestaurantsSimple,
   getPendingHotelsByUser,
   getRejectedRestaurantsForAdmin,
@@ -61,6 +62,8 @@ router.put(
   isAuthenticated,
   rejectRestaurant
 );
+
+router.get("/all-cuisines", isAuthenticated, getCuisineList)
 
 router.delete(
   "/delete-restaurant/:restaurantId",
