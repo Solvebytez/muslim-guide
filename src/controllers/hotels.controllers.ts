@@ -477,7 +477,14 @@ export const approveRestaurant = asyncHandler(async (req, res, next) => {
 });
 
 export const getCuisineList = asyncHandler(async (req, res, next) => {
-  const cuisineList = await Restaurant.distinct("cuisine");
+  const cuisines = await Restaurant.distinct("cuisine");
+
+  const cuisineList = cuisines
+    .filter(c => c?.trim()) // remove empty or null
+    .map(cuisine => ({
+      _id: new Types.ObjectId(),
+      name: cuisine
+    }));
 
   apiSuccessResponse(res, "successful", httpCode.OK, {
     cuisineList
