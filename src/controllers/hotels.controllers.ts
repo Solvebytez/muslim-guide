@@ -476,7 +476,13 @@ export const approveRestaurant = asyncHandler(async (req, res, next) => {
   });
 });
 
+export const getCuisineList = asyncHandler(async (req, res, next) => {
+  const cuisineList = await Restaurant.distinct("cuisine");
 
+  apiSuccessResponse(res, "successful", httpCode.OK, {
+    cuisineList
+  });
+});
 
 export const rejectRestaurant = asyncHandler(async (req, res, next) => {
   const userId = (req as any).user?._id;
