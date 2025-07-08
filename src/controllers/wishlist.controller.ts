@@ -43,6 +43,8 @@ export const addToWishlist = asyncHandler(async (req, res) => {
   export const removeFromWishlist = asyncHandler(async (req, res) => {
     const userId = (req as any).user._id;
     const { restaurantId } = req.body;
+
+    console.log("req.body?.page1st",req.body?.page,"restaurantId",restaurantId)
   
     const wishlist = await Wishlist.findOne({ user: userId });
     

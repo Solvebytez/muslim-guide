@@ -18,8 +18,6 @@ export const isAuthenticated = asyncHandler(
       req.cookies?.isl_vendor_access_token ||
       req.headers.authorization?.split(" ")?.[1];
 
-    console.log("token", token);
-
     if (!token) {
       throw new UnauthorizedError("Unauthorized");
     }
@@ -31,8 +29,7 @@ export const isAuthenticated = asyncHandler(
     }
 
     // Verify the token
-    const decode = jwt.verify(token, config.JWT_ACCESS_SECRET);
-    console.log("decode", decode);
+    const decode = jwt.verify(token, config.JWT_ACCESS_SECRET);  
 
     if (!decode) {
       throw new UnauthorizedError("Unauthorized");
