@@ -66,14 +66,18 @@ export const addToWishlist = asyncHandler(async (req, res) => {
 
   export const getWishlist = asyncHandler(async (req, res) => {
 
-    console.log("req.body?.page",req.body?.page)
+    console.log("req.body?.page1st",req.body?.page)
 
     const userId = (req as any).user._id;
     const pageNumber = parseInt(req.body?.page as string) || 1;
     const pageSize = parseInt(req.body?.pageSize as string) || 4; // Default 10 items per page
     const skip = (pageNumber - 1) * pageSize;
 
+    console.log("req.body?.page",req.body?.page,"userId",userId)
+
     const wishlist = await Wishlist.findOne({ user: userId });
+
+    console.log("wishlist----------",wishlist)
   
     if (!wishlist) {
       return apiSuccessResponse(res, "Wishlist retrieved", httpCode.OK, {
