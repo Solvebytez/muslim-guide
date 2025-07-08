@@ -8,6 +8,7 @@ import { hotelRoutes } from "./routes/addHotels.routes";
 import wishlistRoutes from "./routes/wishlist.routes";
 import supportRoutes from "./routes/support.routes";
 import cookieParser from "cookie-parser";
+import { seedRestaurants } from "./seed/restaurant-seed-data";
 
 
 const app = express();
@@ -63,6 +64,16 @@ app.use(errorHandler)
 
 connectDb().then(() => {
     app.listen(port, () => {
+
+      seedRestaurants()
+  .then(() => {
+    console.log('Seeding completed successfully!');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('Seeding failed:', error);
+    process.exit(1);
+  });
         console.log(`Server is running on port ${port}`);
     });
 });

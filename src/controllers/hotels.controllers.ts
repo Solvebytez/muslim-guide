@@ -36,7 +36,7 @@ export const addHotels = asyncHandler(async (req, res, next) => {
 
       // Assuming req.body contains the necessary data for creating a restaurant
     
-      const { hotelData, phoneNumber, cuisines,contactName,contactEmail } = req.body;
+      const { hotelData, phoneNumber, cuisines,contactName,contactEmail,suppliers } = req.body;
       if (!hotelData || !phoneNumber || !cuisines) {
         return res.status(400).json({
           success: false,
@@ -46,6 +46,9 @@ export const addHotels = asyncHandler(async (req, res, next) => {
     
       const parsedHotelData = JSON.parse(hotelData);
       const parsedCuisines = JSON.parse(cuisines);
+      const persedSuppliers = JSON.parse(suppliers);
+
+      console.log("persedSuppliers", persedSuppliers);;
     
      
     const newRestaurant = new Restaurant({
@@ -53,6 +56,7 @@ export const addHotels = asyncHandler(async (req, res, next) => {
       cuisine: parsedCuisines,
       address: parsedHotelData.formatted_address,
       contactEmail: contactEmail,
+      suppliers: persedSuppliers,
       contactName: contactName,
       phoneNumber: phoneNumber,
       rating: parsedHotelData.rating,
