@@ -65,15 +65,15 @@ app.use(errorHandler)
 connectDb().then(() => {
     app.listen(port, () => {
 
-      seedRestaurants()
-  .then(() => {
-    console.log('Seeding completed successfully!');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Seeding failed:', error);
-    process.exit(1);
-  });
+  //     seedRestaurants()
+  // .then(() => {
+  //   console.log('Seeding completed successfully!');
+  //   process.exit(0);
+  // })
+  // .catch((error) => {
+  //   console.error('Seeding failed:', error);
+  //   process.exit(1);
+  // });
         console.log(`Server is running on port ${port}`);
     });
 });
