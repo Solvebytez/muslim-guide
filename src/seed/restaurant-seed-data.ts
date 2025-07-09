@@ -29,12 +29,13 @@ const restaurantSeedData = [
     cuisine: ["North Indian", "Mughlai (kebabs, biryani, butter chicken)"],
     contactName: "Rajesh Kumar",
     contactEmail: "rajesh@spicepalace.com",
+    phoneNumber: "+16505551234",
     address: "1234 El Camino Real, Palo Alto, CA 94301",
     rating: 4.5,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -47,12 +48,13 @@ const restaurantSeedData = [
     cuisine: ["Punjabi (tandoori, curries, naan)"],
     contactName: "Priya Singh",
     contactEmail: "priya@tandoorexpress.com",
+    phoneNumber: "+16505552345",
     address: "2567 University Ave, Palo Alto, CA 94301",
     rating: 4.2,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -65,12 +67,13 @@ const restaurantSeedData = [
     cuisine: ["Awadhi / Lucknowi cuisine"],
     contactName: "Mohammad Ali",
     contactEmail: "ali@lucknowidelights.com",
+    phoneNumber: "+16505553456",
     address: "789 Forest Ave, Palo Alto, CA 94301",
     rating: 4.7,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -83,12 +86,13 @@ const restaurantSeedData = [
     cuisine: ["Delhi street food (chaat, kebabs, korma)"],
     contactName: "Vikram Sharma",
     contactEmail: "vikram@delhistreet.com",
+    phoneNumber: "+16505554567",
     address: "456 California Ave, Palo Alto, CA 94306",
     rating: 4.3,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -101,12 +105,13 @@ const restaurantSeedData = [
     cuisine: ["South Indian"],
     contactName: "Lakshmi Menon",
     contactEmail: "lakshmi@southspice.com",
+    phoneNumber: "+16505555678",
     address: "321 Middlefield Rd, Palo Alto, CA 94301",
     rating: 4.6,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -119,12 +124,13 @@ const restaurantSeedData = [
     cuisine: ["Hyderabadi"],
     contactName: "Farhan Ahmed",
     contactEmail: "farhan@hyderabadi.com",
+    phoneNumber: "+16505556789",
     address: "654 Embarcadero Rd, Palo Alto, CA 94301",
     rating: 4.8,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -137,12 +143,13 @@ const restaurantSeedData = [
     cuisine: ["Tamil Muslim cuisine (sukka, paya, kari dosa)"],
     contactName: "Abdul Rahman",
     contactEmail: "abdul@tamilmuslim.com",
+    phoneNumber: "+16505557890",
     address: "987 Page Mill Rd, Palo Alto, CA 94304",
     rating: 4.4,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -155,12 +162,13 @@ const restaurantSeedData = [
     cuisine: ["Kerala Muslim cuisine (malabar parotta, pathiri, beef fry)"],
     contactName: "Rasheed Kutty",
     contactEmail: "rasheed@keralamalabar.com",
+    phoneNumber: "+16505558901",
     address: "147 Alma St, Palo Alto, CA 94301",
     rating: 4.5,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -173,12 +181,13 @@ const restaurantSeedData = [
     cuisine: ["Andhra spicy dishes (chicken 65, haleem)"],
     contactName: "Suresh Reddy",
     contactEmail: "suresh@andhraspice.com",
+    phoneNumber: "+16505550012",
     address: "258 High St, Palo Alto, CA 94301",
     rating: 4.1,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -191,12 +200,13 @@ const restaurantSeedData = [
     cuisine: ["Pakistani", "Karahi, nihari, paya, kababs, biryani"],
     contactName: "Imran Khan",
     contactEmail: "imran@pakistanikarahi.com",
+    phoneNumber: "+16505551123",
     address: "369 Lytton Ave, Palo Alto, CA 94301",
     rating: 4.6,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -209,12 +219,13 @@ const restaurantSeedData = [
     cuisine: ["Bangladeshi", "Bhuna khichuri, beef rezala, kacchi biryani"],
     contactName: "Karim Uddin",
     contactEmail: "karim@dhakadelicacies.com",
+    phoneNumber: "+16505552234",
     address: "741 Ramona St, Palo Alto, CA 94301",
     rating: 4.3,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -227,12 +238,13 @@ const restaurantSeedData = [
     cuisine: ["Afghan", "Kabuli pulao, mantu, kebabs"],
     contactName: "Ahmad Shah",
     contactEmail: "ahmad@kabuli.com",
+    phoneNumber: "+16505553345",
     address: "852 Homer Ave, Palo Alto, CA 94301",
     rating: 4.4,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -245,12 +257,13 @@ const restaurantSeedData = [
     cuisine: ["Mughlai (kebabs, biryani, butter chicken)", "North Indian"],
     contactName: "Arjun Kapoor",
     contactEmail: "arjun@mughalempire.com",
+    phoneNumber: "+16505554456",
     address: "963 Channing Ave, Palo Alto, CA 94301",
     rating: 4.7,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -263,13 +276,14 @@ const restaurantSeedData = [
     cuisine: ["Punjabi (tandoori, curries, naan)"],
     contactName: "Gurpreet Singh",
     contactEmail: "gurpreet@punjabdhaba.com",
+    phoneNumber: "+16505555567",
     address: "174 Webster St, Palo Alto, CA 94301",
     rating: 4.2,
     distanceUnit: "km",
     userId: userId,
     isApproved: "pending",
-
- suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],    location: {
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
     },
@@ -281,12 +295,13 @@ const restaurantSeedData = [
     cuisine: ["Awadhi / Lucknowi cuisine"],
     contactName: "Zara Begum",
     contactEmail: "zara@nawabi.com",
+    phoneNumber: "+16505556678",
     address: "285 Kipling St, Palo Alto, CA 94301",
     rating: 4.5,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -299,12 +314,13 @@ const restaurantSeedData = [
     cuisine: ["Delhi street food (chaat, kebabs, korma)"],
     contactName: "Amit Gupta",
     contactEmail: "amit@chaatcorner.com",
+    phoneNumber: "+16505557789",
     address: "396 Kingsley Ave, Palo Alto, CA 94301",
     rating: 4.0,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -317,12 +333,13 @@ const restaurantSeedData = [
     cuisine: ["South Indian"],
     contactName: "Ravi Krishnan",
     contactEmail: "ravi@dosapalace.com",
+    phoneNumber: "+16505558890",
     address: "507 Cowper St, Palo Alto, CA 94301",
     rating: 4.3,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -335,12 +352,13 @@ const restaurantSeedData = [
     cuisine: ["Hyderabadi"],
     contactName: "Salman Nizami",
     contactEmail: "salman@nizami.com",
+    phoneNumber: "+16505559901",
     address: "618 Waverley St, Palo Alto, CA 94301",
     rating: 4.8,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -353,12 +371,13 @@ const restaurantSeedData = [
     cuisine: ["Tamil Muslim cuisine (sukka, paya, kari dosa)"],
     contactName: "Naseema Banu",
     contactEmail: "naseema@chettinad.com",
+    phoneNumber: "+16505550013",
     address: "729 Forest Ave, Palo Alto, CA 94301",
     rating: 4.4,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -371,12 +390,13 @@ const restaurantSeedData = [
     cuisine: ["Kerala Muslim cuisine (malabar parotta, pathiri, beef fry)"],
     contactName: "Rafeeque Master",
     contactEmail: "rafeeque@malabarcoast.com",
+    phoneNumber: "+16505551124",
     address: "830 Addison Ave, Palo Alto, CA 94301",
     rating: 4.6,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -389,12 +409,13 @@ const restaurantSeedData = [
     cuisine: ["Andhra spicy dishes (chicken 65, haleem)"],
     contactName: "Venkat Rao",
     contactEmail: "venkat@spicyandhra.com",
+    phoneNumber: "+16505552235",
     address: "941 Bryant St, Palo Alto, CA 94301",
     rating: 4.1,
     distanceUnit: "km",
     userId: userId,
     isApproved: "rejected",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -407,12 +428,13 @@ const restaurantSeedData = [
     cuisine: ["Pakistani", "Karahi, nihari, paya, kababs, biryani"],
     contactName: "Tariq Malik",
     contactEmail: "tariq@lahorenights.com",
+    phoneNumber: "+16505553346",
     address: "152 Sherman Ave, Palo Alto, CA 94306",
     rating: 4.5,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -425,12 +447,13 @@ const restaurantSeedData = [
     cuisine: ["Bangladeshi", "Bhuna khichuri, beef rezala, kacchi biryani"],
     contactName: "Shahid Hasan",
     contactEmail: "shahid@banglafeast.com",
+    phoneNumber: "+16505554457",
     address: "263 Lincoln Ave, Palo Alto, CA 94301",
     rating: 4.2,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -443,12 +466,13 @@ const restaurantSeedData = [
     cuisine: ["Afghan", "Kabuli pulao, mantu, kebabs"],
     contactName: "Nasir Ahmad",
     contactEmail: "nasir@afghangrill.com",
+    phoneNumber: "+16505555568",
     address: "374 California Ave, Palo Alto, CA 94306",
     rating: 4.3,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -461,12 +485,13 @@ const restaurantSeedData = [
     cuisine: ["Mughlai (kebabs, biryani, butter chicken)"],
     contactName: "Deepak Malhotra",
     contactEmail: "deepak@royalmughal.com",
+    phoneNumber: "+16505556679",
     address: "485 Middlefield Rd, Palo Alto, CA 94301",
     rating: 4.7,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -479,13 +504,14 @@ const restaurantSeedData = [
     cuisine: ["Punjabi (tandoori, curries, naan)"],
     contactName: "Jasbir Kaur",
     contactEmail: "jasbir@amritsarjunction.com",
+    phoneNumber: "+16505557780",
     address: "596 Embarcadero Rd, Palo Alto, CA 94301",
     rating: 4.4,
     distanceUnit: "km",
     userId: userId,
     isApproved: "pending",
-
- suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],    location: {
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
     },
@@ -497,12 +523,13 @@ const restaurantSeedData = [
     cuisine: ["Awadhi / Lucknowi cuisine"],
     contactName: "Faizal Ahmed",
     contactEmail: "faizal@lucknowcentral.com",
+    phoneNumber: "+16505558891",
     address: "607 Page Mill Rd, Palo Alto, CA 94304",
     rating: 4.6,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -515,12 +542,13 @@ const restaurantSeedData = [
     cuisine: ["Delhi street food (chaat, kebabs, korma)"],
     contactName: "Rohit Aggarwal",
     contactEmail: "rohit@delhidarbar.com",
+    phoneNumber: "+16505559902",
     address: "718 Alma St, Palo Alto, CA 94301",
     rating: 4.1,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -533,12 +561,13 @@ const restaurantSeedData = [
     cuisine: ["South Indian"],
     contactName: "Kamala Devi",
     contactEmail: "kamala@madrasmeals.com",
+    phoneNumber: "+16505550014",
     address: "829 High St, Palo Alto, CA 94301",
     rating: 4.5,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -551,12 +580,13 @@ const restaurantSeedData = [
     cuisine: ["Hyderabadi"],
     contactName: "Asif Ali",
     contactEmail: "asif@deccandelights.com",
+    phoneNumber: "+16505551125",
     address: "930 Lytton Ave, Palo Alto, CA 94301",
     rating: 4.8,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -569,12 +599,13 @@ const restaurantSeedData = [
     cuisine: ["Tamil Muslim cuisine (sukka, paya, kari dosa)"],
     contactName: "Yasmeen Sultana",
     contactEmail: "yasmeen@arcotpalace.com",
+    phoneNumber: "+16505552236",
     address: "141 Ramona St, Palo Alto, CA 94301",
     rating: 4.3,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -587,12 +618,13 @@ const restaurantSeedData = [
     cuisine: ["Kerala Muslim cuisine (malabar parotta, pathiri, beef fry)"],
     contactName: "Ibrahim Kutty",
     contactEmail: "ibrahim@kozhikode.com",
+    phoneNumber: "+16505553347",
     address: "252 Homer Ave, Palo Alto, CA 94301",
     rating: 4.7,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -605,12 +637,13 @@ const restaurantSeedData = [
     cuisine: ["Andhra spicy dishes (chicken 65, haleem)"],
     contactName: "Ramesh Babu",
     contactEmail: "ramesh@guntur.com",
+    phoneNumber: "+16505554458",
     address: "363 Channing Ave, Palo Alto, CA 94301",
     rating: 4.0,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -623,12 +656,13 @@ const restaurantSeedData = [
     cuisine: ["Pakistani", "Karahi, nihari, paya, kababs, biryani"],
     contactName: "Bilal Sheikh",
     contactEmail: "bilal@karachi.com",
+    phoneNumber: "+16505555569",
     address: "474 Webster St, Palo Alto, CA 94301",
     rating: 4.4,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -641,13 +675,14 @@ const restaurantSeedData = [
     cuisine: ["Bangladeshi", "Bhuna khichuri, beef rezala, kacchi biryani"],
     contactName: "Mizanur Rahman",
     contactEmail: "mizan@sylhetspice.com",
+    phoneNumber: "+16505556680",
     address: "585 Kipling St, Palo Alto, CA 94301",
     rating: 4.2,
     distanceUnit: "km",
     userId: userId,
     isApproved: "pending",
-
- suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],    location: {
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
     },
@@ -659,12 +694,13 @@ const restaurantSeedData = [
     cuisine: ["Afghan", "Kabuli pulao, mantu, kebabs"],
     contactName: "Waheed Khan",
     contactEmail: "waheed@kandahar.com",
+    phoneNumber: "+16505557791",
     address: "696 Kingsley Ave, Palo Alto, CA 94301",
     rating: 4.5,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -677,12 +713,13 @@ const restaurantSeedData = [
     cuisine: ["Mughlai (kebabs, biryani, butter chicken)", "Hyderabadi"],
     contactName: "Nasreen Begum",
     contactEmail: "nasreen@bawarchi.com",
+    phoneNumber: "+16505558892",
     address: "707 Cowper St, Palo Alto, CA 94301",
     rating: 4.6,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -695,12 +732,13 @@ const restaurantSeedData = [
     cuisine: ["Punjabi (tandoori, curries, naan)"],
     contactName: "Harpreet Kaur",
     contactEmail: "harpreet@chandigarhchowk.com",
+    phoneNumber: "+16505559903",
     address: "818 Waverley St, Palo Alto, CA 94301",
     rating: 4.3,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -713,12 +751,13 @@ const restaurantSeedData = [
     cuisine: ["Awadhi / Lucknowi cuisine"],
     contactName: "Shakeel Ahmad",
     contactEmail: "shakeel@awadhi.com",
+    phoneNumber: "+16505550015",
     address: "929 Forest Ave, Palo Alto, CA 94301",
     rating: 4.4,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)
@@ -731,12 +770,13 @@ const restaurantSeedData = [
     cuisine: ["Delhi street food (chaat, kebabs, korma)"],
     contactName: "Sanjay Jain",
     contactEmail: "sanjay@chandnichowk.com",
+    phoneNumber: "+16505551126",
     address: "130 Addison Ave, Palo Alto, CA 94301",
     rating: 4.2,
     distanceUnit: "km",
     userId: userId,
     isApproved: "approved",
-     suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
+    suppliers: ["Local Farm Fresh", "Premium Spice Co", "Palo Alto Meat Suppliers"],
     location: {
       type: "Point",
       coordinates: generateRandomCoordinates(baseLatitude, baseLongitude)

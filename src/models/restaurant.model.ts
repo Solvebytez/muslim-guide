@@ -12,6 +12,7 @@ export interface IRestaurant extends Document {
   image: Types.ObjectId | null;
   contactName: string;
   contactEmail: string;
+  phoneNumber?: string;
   address: string;
   suppliers?: string[];
   rating: number;
@@ -55,6 +56,10 @@ const RestaurantSchema = new Schema<IRestaurant>({
   cuisine: {
     type: [String],
     required: true,
+    trim: true
+  },
+  phoneNumber: {
+    type: String,   
     trim: true
   },
   address: {

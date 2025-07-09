@@ -16,6 +16,7 @@ import {
   getPendingHotelsByUser,
   getRejectedRestaurantsForAdmin,
   rejectRestaurant,
+  resturentUpdate,
 } from "../controllers/hotels.controllers";
 
 router.post("/add-hotel", isAuthenticated, hotelImage.singleImage, addHotels);
@@ -70,5 +71,7 @@ router.delete(
   isAuthenticated,
   deleteRestaurant
 )
+
+router.put("/update-resturent/:restaurantId", isAuthenticated,resturentUpdate)
 
 export const hotelRoutes = router;

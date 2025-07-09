@@ -42,7 +42,7 @@ export const addHotels = asyncHandler(async (req, res, next) => {
 
       const persedSuppliers = JSON.parse(suppliers);
 
-      console.log("persedSuppliers", persedSuppliers,hotelData);;
+      console.log("persedSuppliers", persedSuppliers,hotelData,phoneNumber);;
       
       if (!hotelData || !phoneNumber || !cuisines) {
         return res.status(400).json({
@@ -651,6 +651,74 @@ export const deleteRestaurant = asyncHandler(async (req, res, next) => {
   apiSuccessResponse(res, "successful", httpCode.OK, {
     restaurant
   })
+
+})
+
+export const resturentUpdate = asyncHandler(async (req, res, next) => {
+  const userId = (req as any).user?._id;
+  if (!userId) {
+    throw new ValidationError("User ID is required");
+  }
+
+  const user = await User.findById(userId);
+
+
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+
+  const restaurantId = req.params.restaurantId;
+
+  const restaurant = await Restaurant.findById(restaurantId);
+
+  if (!restaurant) {
+    throw new ValidationError("'Restaurant not found or you are not authorized to update it");
+  }
+
+  // Validate the request body
+  const updates = req.body;
+
+  const allowedUpdates = [
+    'name', 'cuisine', 'contactName', 'contactEmail', 'phoneNumber', 
+    'address', 'suppliers'
+  ];
+  
+  const requestedUpdates = Object.keys(updates);
+  const isValidOperation = requestedUpdates.every(update => allowedUpdates.includes(update));
+
+  console.log("isValidOperation",isValidOperation)
+  
+  if (!isValidOperation) {
+    return res.status(400).json({ message: 'Invalid updates attempted' });
+  }
+
+  // Special handling for arrays that come as comma-separated strings from frontend
+  if (updates.cuisine && typeof updates.cuisine === 'string') {
+    updates.cuisine = updates.cuisine.split(',').map((item: string) => item.trim());
+  }
+  
+  if (updates.suppliers && typeof updates.suppliers === 'string') {
+    updates.suppliers = updates.suppliers.split(',').map((item: string) => item.trim());
+  }
+  
+  // Handle location updates
+  if (updates.location) {
+    if (!updates.location.coordinates || !Array.isArray(updates.location.coordinates)) {
+      return res.status(400).json({ message: 'Invalid location format' });
+    }
+  }
+  
+  // Apply updates
+  requestedUpdates.forEach(update => {
+    (restaurant as any)[update] = updates[update];
+  });
+  
+  await restaurant.save();
+
+  apiSuccessResponse(res, "successful", httpCode.OK, {
+    restaurant
+  })
+
 
 })
 

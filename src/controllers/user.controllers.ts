@@ -219,28 +219,28 @@ console.log("isProd", isProd,"process.env.RENDER",process.env.RENDER)
 res.cookie("isl_session_marker", "1", {
   httpOnly: false,               // Middleware can read it
   secure: isProd,                // true in production
-  sameSite: "none",              // ✅ Required for cross-site
+  sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,   // 1 day
   path: "/",
-  domain: ".muslimcompass.io", // ✅ Set for root domain
+  // domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_access_token", accesstoken, {
   httpOnly: true,
   secure: isProd,
-  sameSite: "none",              // ✅ Required for cross-site
+  sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,
   path: "/",
-  domain: ".muslimcompass.io", // ✅ Set for root domain
+  // domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_refresh_token", refreshToken, {
   httpOnly: true,
   secure: isProd,
-  sameSite: "none",              // ✅ Fixed here
+  sameSite: isProd?'none':'lax',              // ✅ Fixed here
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",
-  domain: ".muslimcompass.io", // ✅ Set for root domain
+  // domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
@@ -392,10 +392,10 @@ export const refreshToken = asyncHandler(
     res.cookie("isl_admin_access_token", newAccessToken, {
       httpOnly: true,
       secure: isProd,
-     sameSite:"none",         // ✅ Must be "none" for cross-site
+     sameSite:isProd?"none":"lax",         // ✅ Must be "none" for cross-site
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      domain: ".muslimcompass.io", // ✅ Set for root domain
+      // domain: ".muslimcompass.io", // ✅ Set for root domain
     });
     
 
@@ -578,7 +578,7 @@ export const userLogout = asyncHandler(
       secure: isProd,
       sameSite: "none" as const,
       path: "/",
-      domain: ".muslimcompass.io",
+      // domain: ".muslimcompass.io",
     };
 
     // ✅ Clear all relevant cookies (must match how they were set)
