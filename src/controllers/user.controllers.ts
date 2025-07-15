@@ -222,7 +222,7 @@ res.cookie("isl_session_marker", "1", {
   sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,   // 1 day
   path: "/",
-  // domain: ".muslimcompass.io", // ✅ Set for root domain
+   domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_access_token", accesstoken, {
@@ -231,7 +231,7 @@ res.cookie("isl_admin_access_token", accesstoken, {
   sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,
   path: "/",
-  // domain: ".muslimcompass.io", // ✅ Set for root domain
+   domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_refresh_token", refreshToken, {
@@ -240,7 +240,7 @@ res.cookie("isl_admin_refresh_token", refreshToken, {
   sameSite: isProd?'none':'lax',              // ✅ Fixed here
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",
-  // domain: ".muslimcompass.io", // ✅ Set for root domain
+   domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
@@ -395,7 +395,7 @@ export const refreshToken = asyncHandler(
      sameSite:isProd?"none":"lax",         // ✅ Must be "none" for cross-site
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      // domain: ".muslimcompass.io", // ✅ Set for root domain
+       domain: ".muslimcompass.io", // ✅ Set for root domain
     });
     
 
@@ -578,7 +578,7 @@ export const userLogout = asyncHandler(
       secure: isProd,
       sameSite: "none" as const,
       path: "/",
-      // domain: ".muslimcompass.io",
+       domain: ".muslimcompass.io",
     };
 
     // ✅ Clear all relevant cookies (must match how they were set)

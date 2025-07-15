@@ -682,6 +682,10 @@ export const resturentUpdate = asyncHandler(async (req, res, next) => {
     'name', 'cuisine', 'contactName', 'contactEmail', 'phoneNumber', 
     'address', 'suppliers'
   ];
+
+  console.log("updates",updates)
+
+ 
   
   const requestedUpdates = Object.keys(updates);
   const isValidOperation = requestedUpdates.every(update => allowedUpdates.includes(update));
