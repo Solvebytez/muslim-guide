@@ -13,6 +13,11 @@ export interface IUser extends Document {
     otp_expiry: Date | null;
     status:string;
     provider:string;
+    userLocation?: {
+        type: "Point";
+        coordinates: [number, number];
+      } | null;
+    address?: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -63,7 +68,30 @@ const userSchema = new Schema<IUser>({
         type:String,
         enum:["active","blocked"],
         default:"active"
-    }
+    },
+    address:{
+        type:String
+    },
+    userLocation: {
+        type: {
+          type: String,
+          enum: ['Point'],
+          required: true,
+          default: 'Point'
+        },
+        coordinates: {
+          type: [Number],
+          
+          validate: {
+            validator: (coords: [number, number]) => {
+              // Validate longitude (-180 to 180) and latitude (-90 to 90)
+              return coords[0] >= -180 && coords[0] <= 180 && 
+                     coords[1] >= -90 && coords[1] <= 90;
+            },
+            message: 'Invalid coordinates. Longitude must be between -180 and 180, latitude between -90 and 90.'
+          }
+        }
+      },
 },{
     timestamps:true
 })

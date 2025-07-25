@@ -261,7 +261,9 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     throw new ValidationError("Validation Error", errors.array());
   }
-  const { signInToken } = req.body || {};
+  const { signInToken,location } = req.body || {};
+
+  console.log("location", location)
 
   if (!req.body.signInToken) {
     return res
@@ -270,6 +272,19 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const decoded = jwt.verify(signInToken, config.APP_API_TOKEN) as DecodedToken;
+
+
+ 
+
+  const geoLocation: { type: "Point"; coordinates: [number, number] } | null =
+  location?.latitude !== undefined && location?.longitude !== undefined
+    ? {
+        type: "Point",
+        coordinates: [location.longitude, location.latitude],
+      }
+    : null;
+
+   
 
   if (!decoded) {
     return res
@@ -298,6 +313,18 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
         .status(400)
         .json({ message: "User is not active", success: false });
     }
+    if (geoLocation) {
+      user.userLocation = geoLocation;
+      user.address= [
+        location.city,
+        location.region,
+        location.postalCode,
+        location.country,
+      ]
+        .filter(Boolean) // removes undefined or empty strings
+        .join(", ");
+      await user.save();
+    }
   }
 
   const { email, name, avatar, role } = decoded;
@@ -310,6 +337,15 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
       provider: "google",
       role: role,
       isVerified: true,
+      userLocation: geoLocation,
+      address: [
+        location.city,
+        location.region,
+        location.postalCode,
+        location.country,
+      ]
+       .filter(Boolean) // removes undefined or empty strings
+       .join(", "),
     });
   }
 
