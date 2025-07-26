@@ -96,6 +96,15 @@ const userSchema = new Schema<IUser>({
     timestamps:true
 })
 
+userSchema.virtual("restaurants", {
+    ref: "Restaurant",
+    localField: "_id",
+    foreignField: "userId"
+  });
+  
+  userSchema.set("toObject", { virtuals: true });
+  userSchema.set("toJSON", { virtuals: true });
+
 userSchema.pre("save", async function(next) {
     if (!this.isModified("password") || !this.password) {
         return next();

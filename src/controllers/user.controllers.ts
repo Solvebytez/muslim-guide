@@ -231,7 +231,7 @@ res.cookie("isl_admin_access_token", accesstoken, {
   sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
   maxAge: 24 * 60 * 60 * 1000,
   path: "/",
-   domain: ".muslimcompass.io", // ✅ Set for root domain
+  domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
 res.cookie("isl_admin_refresh_token", refreshToken, {
@@ -240,7 +240,7 @@ res.cookie("isl_admin_refresh_token", refreshToken, {
   sameSite: isProd?'none':'lax',              // ✅ Fixed here
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: "/",
-   domain: ".muslimcompass.io", // ✅ Set for root domain
+  domain: ".muslimcompass.io", // ✅ Set for root domain
 });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
@@ -511,7 +511,13 @@ export const getActiveUser = asyncHandler(async (req: RequestWithUser, res: Resp
     throw new ValidationError("Only admin can access this route");
   }
 
-  const users = await User.find();
+  
+  const users = await User.find()  .populate({
+    path: "restaurants",
+    select: "name" // Only these fields from Restaurant
+  })
+  .where("restaurants").ne([]); // only users with restaurants
+  console.log('users',users)
   apiSuccessResponse(res, "All active users", httpCode.OK, {
     users
   })
