@@ -9,6 +9,7 @@ import wishlistRoutes from "./routes/wishlist.routes";
 import supportRoutes from "./routes/support.routes";
 import cookieParser from "cookie-parser";
 import { seedRestaurants } from "./seed/restaurant-seed-data";
+import { seedUsers } from "./seed/user-seed-data";
 
 
 const app = express();
@@ -64,8 +65,9 @@ app.use(errorHandler)
 
 connectDb().then(() => {
     app.listen(port, () => {
-
+ // seedUsers()
   //     seedRestaurants()
+ 
   // .then(() => {
   //   console.log('Seeding completed successfully!');
   //   process.exit(0);

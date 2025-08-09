@@ -69,7 +69,7 @@ export const addHotels = asyncHandler(async (req, res, next) => {
       isApproved: "pending", // Default status
       location: {
         type: "Point",
-        coordinates: [
+        coordinates: [  
           parsedHotelData.coordinates.lng,
           parsedHotelData.coordinates.lat,
         ], // GeoJSON format: [longitude, latitude]
@@ -357,7 +357,9 @@ export const getNearestRestaurantsSimple = asyncHandler(async (req, res, next) =
   }
 
 
-  const { lat, lng, maxDistance = 10000, limit = 20, cuisine, minRating } = req.body;
+  const { lat, lng, maxDistance = 30000, limit = 20, cuisine, minRating } = req.body;
+
+  console.log("req.body",req.body)
 
   // Validate coordinates
   if (!lat || !lng) {
@@ -368,6 +370,7 @@ export const getNearestRestaurantsSimple = asyncHandler(async (req, res, next) =
   }
 
   console.log(lat,lng);
+
 
   const nearestRestaurants = await Restaurant.find({
     location: {
@@ -391,6 +394,7 @@ export const getNearestRestaurantsSimple = asyncHandler(async (req, res, next) =
   if (userId) {
     userWishlist = await Wishlist.findOne({ user: userId }).select("restaurants")
   }
+
 
   // Calculate real-time distance for each restaurant based on user's current location
 // Calculate real-time distance for each restaurant based on user's current location
@@ -416,6 +420,7 @@ export const getNearestRestaurantsSimple = asyncHandler(async (req, res, next) =
         isInWishlist, // Add wishlist status
       }
     })
+
 
   apiSuccessResponse(res, "successful", httpCode.OK, {
     restaurants: restaurantsWithDistance
@@ -570,6 +575,8 @@ export const getCuisineList = asyncHandler(async (req, res, next) => {
       _id: new Types.ObjectId(),
       name: cuisine
     }));
+
+    console.log("cuisineList", cuisineList) // ✅ type inf
 
   apiSuccessResponse(res, "successful", httpCode.OK, {
     cuisineList
