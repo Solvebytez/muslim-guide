@@ -64,14 +64,14 @@ router.put(
   rejectRestaurant
 );
 
-router.get("/all-cuisines", isAuthenticated, getCuisineList)
+router.get("/all-cuisines", isAuthenticated, getCuisineList);
 
 router.delete(
   "/delete-restaurant/:restaurantId",
   isAuthenticated,
   deleteRestaurant
-)
+);
 
-router.put("/update-resturent/:restaurantId", isAuthenticated,resturentUpdate)
+router.put("/update-resturent/:restaurantId", isAuthenticated, resturentUpdate);
 
 export const hotelRoutes = router;

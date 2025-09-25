@@ -58,6 +58,7 @@ app.use("/api/", limiter);
 app.use("/api/v1/users/login", authLimiter);
 app.use("/api/v1/users/register", authLimiter);
 
+// CORS configuration
 const allowedOrigins = [
   "https://admin.muslimcompass.io",
   "http://localhost:3000",
@@ -69,8 +70,8 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow requests with no origin (native apps, curl, Postman, etc.)
       if (!origin) {
-        // ✅ Allow requests with no origin (native apps, curl, Postman, etc.)
         return callback(null, true);
       }
 
@@ -78,15 +79,15 @@ app.use(
         return callback(null, true);
       }
 
-      // ❌ Block everything else
+      // Block everything else
       console.warn(`❌ Blocked by CORS: ${origin}`);
       return callback(new Error("Not allowed by CORS"));
     },
-    credentials: true, // ✅ Required if using cookies or HTTP auth
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    exposedHeaders: ["set-cookie"], // ✅ Expose cookie headers for debugging
-    optionsSuccessStatus: 200, // ✅ Some legacy browsers choke on 204
+    exposedHeaders: ["set-cookie"],
+    optionsSuccessStatus: 200,
   })
 );
 
@@ -119,11 +120,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/v1", userRoutes);
-app.use("/api/v1", hotelRoutes);
-app.use("/api/v1", wishlistRoutes);
-app.use("/api/v1", supportRoutes);
-
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -134,6 +130,12 @@ app.get("/health", (req, res) => {
     version: process.env.npm_package_version || "1.0.0",
   });
 });
+
+// API routes
+app.use("/api/v1", userRoutes);
+app.use("/api/v1", hotelRoutes);
+app.use("/api/v1", wishlistRoutes);
+app.use("/api/v1", supportRoutes);
 
 // Root endpoint
 app.get("/", (req, res) => {
@@ -193,3 +195,5 @@ connectDb()
     console.error("❌ Database connection failed:", error);
     process.exit(1);
   });
+
+export default app;
