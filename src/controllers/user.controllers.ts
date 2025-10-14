@@ -8,7 +8,7 @@ import { sendOtp } from "../utils/sendOtp";
 import { apiSuccessResponse } from "../utils/response";
 import { httpCode } from "../config/http.config";
 import bcrypt from "bcryptjs";
-import { generateToken, setTokenCookie } from "../utils/sendToken";
+import { generateToken, setTokenCookie, expiryToMs } from "../utils/sendToken";
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.config";
 import { RequestWithUser } from "../middleware/isAuthenticated";
@@ -88,8 +88,7 @@ export const verifyOtp = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const userLogin = asyncHandler(async (req: Request, res: Response) => {
-
-  console.log("user login", req.body)
+  console.log("user login", req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new ValidationError("Validation Error", errors.array());
@@ -152,7 +151,7 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
   }
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
-    accesstoken,
+    accessToken: accesstoken,
     refreshToken,
   });
 });
@@ -174,7 +173,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     throw new ValidationError("Validation Error", errors.array());
   }
-  
+
   const { email, password, adminToken } = req.body;
 
   if (adminToken !== config.ADMIN_API_TOKEN) {
@@ -182,7 +181,7 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const user = await User.findOne({ email }).select("+password");
-  
+
   if (!user || !user.password) {
     throw new ValidationError("User not found");
   }
@@ -203,48 +202,49 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
   const accesstoken = jwt.sign(
     { _id: user._id, email, role: user.role },
     config.JWT_ACCESS_SECRET,
-    { expiresIn: "1d" }
+    { expiresIn: config.JWT_ACCESS_EXPIRES_IN as any }
   );
 
   const refreshToken = jwt.sign(
     { _id: user._id, email, role: user.role },
     config.JWT_REFRESH_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: config.JWT_REFRESH_EXPIRES_IN as any }
   );
 
-  const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+  const isProd =
+    process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 
-console.log("isProd", isProd,"process.env.RENDER",process.env.RENDER)
+  console.log("isProd", isProd, "process.env.RENDER", process.env.RENDER);
 
-res.cookie("isl_session_marker", "1", {
-  httpOnly: false,               // Middleware can read it
-  secure: isProd,                // true in production
-  sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
-  maxAge: 24 * 60 * 60 * 1000,   // 1 day
-  path: "/",
-   domain: ".muslimcompass.io", // ✅ Set for root domain
-});
+  res.cookie("isl_session_marker", "1", {
+    httpOnly: false, // Middleware can read it
+    secure: isProd, // true in production
+    sameSite: isProd ? "none" : "lax", // ✅ Required for cross-site
+    maxAge: expiryToMs(config.JWT_ACCESS_EXPIRES_IN),
+    path: "/",
+    domain: ".muslimcompass.io", // ✅ Set for root domain
+  });
 
-res.cookie("isl_admin_access_token", accesstoken, {
-  httpOnly: true,
-  secure: isProd,
-  sameSite: isProd?'none':'lax',              // ✅ Required for cross-site
-  maxAge: 24 * 60 * 60 * 1000,
-  path: "/",
-  domain: ".muslimcompass.io", // ✅ Set for root domain
-});
+  res.cookie("isl_admin_access_token", accesstoken, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax", // ✅ Required for cross-site
+    maxAge: expiryToMs(config.JWT_ACCESS_EXPIRES_IN),
+    path: "/",
+    domain: ".muslimcompass.io", // ✅ Set for root domain
+  });
 
-res.cookie("isl_admin_refresh_token", refreshToken, {
-  httpOnly: true,
-  secure: isProd,
-  sameSite: isProd?'none':'lax',              // ✅ Fixed here
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: "/",
-  domain: ".muslimcompass.io", // ✅ Set for root domain
-});
+  res.cookie("isl_admin_refresh_token", refreshToken, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax", // ✅ Fixed here
+    maxAge: expiryToMs(config.JWT_REFRESH_EXPIRES_IN),
+    path: "/",
+    domain: ".muslimcompass.io", // ✅ Set for root domain
+  });
 
   apiSuccessResponse(res, "User logged in!", httpCode.OK, {
-    accesstoken,
+    accessToken: accesstoken,
     refreshToken,
   });
 });
@@ -261,9 +261,9 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
   if (!errors.isEmpty()) {
     throw new ValidationError("Validation Error", errors.array());
   }
-  const { signInToken,location } = req.body || {};
+  const { signInToken, location } = req.body || {};
 
-  console.log("location", location)
+  console.log("location", location);
 
   if (!req.body.signInToken) {
     return res
@@ -273,18 +273,13 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
 
   const decoded = jwt.verify(signInToken, config.APP_API_TOKEN) as DecodedToken;
 
-
- 
-
   const geoLocation: { type: "Point"; coordinates: [number, number] } | null =
-  location?.latitude !== undefined && location?.longitude !== undefined
-    ? {
-        type: "Point",
-        coordinates: [location.longitude, location.latitude],
-      }
-    : null;
-
-   
+    location?.latitude !== undefined && location?.longitude !== undefined
+      ? {
+          type: "Point",
+          coordinates: [location.longitude, location.latitude],
+        }
+      : null;
 
   if (!decoded) {
     return res
@@ -315,7 +310,7 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
     }
     if (geoLocation) {
       user.userLocation = geoLocation;
-      user.address= [
+      user.address = [
         location.city,
         location.region,
         location.postalCode,
@@ -344,8 +339,8 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
         location.postalCode,
         location.country,
       ]
-       .filter(Boolean) // removes undefined or empty strings
-       .join(", "),
+        .filter(Boolean) // removes undefined or empty strings
+        .join(", "),
     });
   }
 
@@ -385,220 +380,221 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-export const refreshToken = asyncHandler(
-  async (req: any, res: Response) => {
-    const token = req.cookies.isl_admin_refresh_token;
+export const refreshToken = asyncHandler(async (req: any, res: Response) => {
+  const token = req.cookies.isl_admin_refresh_token;
 
-    console.log("token refreshToken", req.cookies.isl_admin_refresh_token);
+  console.log("token refreshToken", req.cookies.isl_admin_refresh_token);
 
-    if (!token) {
-      throw new ValidationError("Unauthorized");
+  if (!token) {
+    throw new ValidationError("Unauthorized");
+  }
+  const blacklistedToken = await BlacklistToken.findOne({ token });
+  if (blacklistedToken) {
+    throw new ValidationError("Unauthorized");
+  }
+
+  const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
+  console.log("decoded refreshToken", decoded);
+
+  if (!decoded) {
+    throw new ValidationError("Unauthorized");
+  }
+
+  const user = await User.findById((decoded as any)._id);
+  if (!user) {
+    throw new ValidationError("User not found");
+  }
+
+  if (user.role !== "admin") {
+    throw new ValidationError("Only admin can refresh web tokens");
+  }
+
+  const newAccessToken = jwt.sign(
+    { _id: user._id, email: user.email, role: user.role },
+    config.JWT_ACCESS_SECRET,
+    {
+      expiresIn: config.JWT_ACCESS_EXPIRES_IN as any,
     }
-    const blacklistedToken = await BlacklistToken.findOne({ token });
-    if (blacklistedToken) {
-      throw new ValidationError("Unauthorized");
-    }
+  );
 
-    const decoded = jwt.verify(token, config.JWT_REFRESH_SECRET);
-    console.log("decoded refreshToken", decoded);
+  const isProd =
+    process.env.NODE_ENV === "production" || process.env.RENDER === "true";
 
-    if (!decoded) {
-      throw new ValidationError("Unauthorized");
-    }
+  res.cookie("isl_admin_access_token", newAccessToken, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax", // ✅ Must be "none" for cross-site
+    maxAge: expiryToMs(config.JWT_ACCESS_EXPIRES_IN),
+    path: "/",
+    domain: ".muslimcompass.io", // ✅ Set for root domain
+  });
 
-    const user = await User.findById((decoded as any)._id);
+  apiSuccessResponse(res, "Login successful", httpCode.OK, {
+    ...user.toObject(),
+    isl_admin_access_token: newAccessToken,
+  });
+});
+
+export const allDataOverview = asyncHandler(
+  async (req: RequestWithUser, res: Response) => {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
     if (!user) {
       throw new ValidationError("User not found");
     }
 
     if (user.role !== "admin") {
-      throw new ValidationError("Only admin can refresh web tokens");
+      throw new ValidationError("Only admin can access this route");
     }
 
-    const newAccessToken = jwt.sign(
-      { _id: user._id, email: user.email, role: user.role },
-      config.JWT_ACCESS_SECRET,
-      {
-        expiresIn: "1d",
-      }
-    );
+    // Get total count of all users
+    const totalUsers = await User.countDocuments();
 
-    const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+    // Get count of regular users (role = "user")
+    const regularUserCount = await User.countDocuments({ role: "user" });
 
-    res.cookie("isl_admin_access_token", newAccessToken, {
-      httpOnly: true,
-      secure: isProd,
-     sameSite:isProd?"none":"lax",         // ✅ Must be "none" for cross-site
-      maxAge: 24 * 60 * 60 * 1000,
-      path: "/",
-       domain: ".muslimcompass.io", // ✅ Set for root domain
+    // Get count of vendor users (role = "vendor")
+    const vendorUserCount = await User.countDocuments({ role: "vendor" });
+
+    // You might also want admin count
+    const adminCount = await User.countDocuments({ role: "admin" });
+
+    // Get total count of all hotels
+    const totalHotels = await Restaurant.countDocuments();
+
+    // Get count of active hotels (status = "active")
+    const pendingHotelCount = await Restaurant.countDocuments({
+      isApproved: "pending",
     });
-    
 
-    apiSuccessResponse(res, "Login successful", httpCode.OK, {
-      ...user.toObject(),
-      isl_admin_access_token: newAccessToken,
+    // Get count of inactive hotels (status = "inactive")
+    const activeHotelCount = await Restaurant.countDocuments({
+      isApproved: "approved",
+    });
+
+    // You might also want admin count
+    const rejectedHotelCount = await Restaurant.countDocuments({
+      isApproved: "rejected",
+    });
+
+    apiSuccessResponse(res, "All data overview", httpCode.OK, {
+      user: {
+        totalUsers,
+        regularUserCount,
+        vendorUserCount,
+        // adminCount,
+      },
+      resturents: {
+        totalHotels,
+        rejectedHotelCount,
+        activeHotelCount,
+        pendingHotelCount,
+      },
     });
   }
 );
 
+export const getActiveUser = asyncHandler(
+  async (req: RequestWithUser, res: Response) => {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
 
-export const allDataOverview = asyncHandler(async (req: RequestWithUser, res: Response) => {
+    if (!user) {
+      throw new ValidationError("User not found");
+    }
 
-  const userId = req.user._id;
-  const user = await User.findById(userId);
+    if (user.role !== "admin") {
+      throw new ValidationError("Only admin can access this route");
+    }
 
-  if(!user){
-    throw new ValidationError("User not found");
+    const users = await User.find()
+      .populate({
+        path: "restaurants",
+        select: "name", // Only these fields from Restaurant
+      })
+      .where("restaurants")
+      .ne([]); // only users with restaurants
+    console.log("users", users);
+    apiSuccessResponse(res, "All active users", httpCode.OK, {
+      users,
+    });
   }
+);
 
-  if(user.role !== "admin"){
-    throw new ValidationError("Only admin can access this route");
+export const blockUser = asyncHandler(
+  async (req: RequestWithUser, res: Response) => {
+    const userId = req.user._id;
+
+    if (!userId) {
+      throw new ValidationError("User not found");
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ValidationError("User not found");
+    }
+
+    if (user.role !== "admin") {
+      throw new ValidationError("Only admin can access this route");
+    }
+
+    const { blockuserId } = req.params;
+
+    if (!blockuserId) {
+      throw new ValidationError("User not found");
+    }
+
+    const userToBlock = await User.findById(blockuserId);
+    if (!userToBlock) {
+      throw new ValidationError("User not found");
+    }
+
+    userToBlock.status = "blocked";
+    await userToBlock.save();
+
+    apiSuccessResponse(res, "User blocked successfully", httpCode.OK, {
+      user: userToBlock,
+    });
   }
+);
 
-  // Get total count of all users
-const totalUsers = await User.countDocuments();
+export const unblockUser = asyncHandler(
+  async (req: RequestWithUser, res: Response) => {
+    const userId = req.user._id;
 
-// Get count of regular users (role = "user")
-const regularUserCount = await User.countDocuments({ role: "user" });
+    if (!userId) {
+      throw new ValidationError("User not found");
+    }
 
-// Get count of vendor users (role = "vendor")
-const vendorUserCount = await User.countDocuments({ role: "vendor" });
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ValidationError("User not found");
+    }
 
-// You might also want admin count
-const adminCount = await User.countDocuments({ role: "admin" });
+    if (user.role !== "admin") {
+      throw new ValidationError("Only admin can access this route");
+    }
 
-// Get total count of all hotels
-const totalHotels = await Restaurant.countDocuments();
+    const { unblokedId } = req.params;
 
-// Get count of active hotels (status = "active")
-const pendingHotelCount = await Restaurant.countDocuments({ isApproved: "pending" });
+    if (!unblokedId) {
+      throw new ValidationError("User not found");
+    }
 
-// Get count of inactive hotels (status = "inactive")
-const activeHotelCount = await Restaurant.countDocuments({ isApproved: "approved" });
+    const userToUnBlock = await User.findById(unblokedId);
+    if (!userToUnBlock) {
+      throw new ValidationError("User not found");
+    }
 
-// You might also want admin count
-const rejectedHotelCount = await Restaurant.countDocuments({ isApproved: "rejected" });
+    userToUnBlock.status = "active";
+    await userToUnBlock.save();
 
-apiSuccessResponse(res, "All data overview", httpCode.OK, {
-  user: {
-    totalUsers,
-  regularUserCount,
-  vendorUserCount,
-  // adminCount,
-  },
-  resturents: {
-    totalHotels,
-    rejectedHotelCount,  
-    activeHotelCount,
-    pendingHotelCount,
+    apiSuccessResponse(res, "User blocked successfully", httpCode.OK, {
+      user: userToUnBlock,
+    });
   }
- 
-})
-
-});
-
-export const getActiveUser = asyncHandler(async (req: RequestWithUser, res: Response) => {
-
-  const userId = req.user._id;
-  const user = await User.findById(userId);
-
-  if(!user){
-    throw new ValidationError("User not found");
-  }
-
-  if(user.role!== "admin"){
-    throw new ValidationError("Only admin can access this route");
-  }
-
-  
-  const users = await User.find()  .populate({
-    path: "restaurants",
-    select: "name" // Only these fields from Restaurant
-  })
-  .where("restaurants").ne([]); // only users with restaurants
-  console.log('users',users)
-  apiSuccessResponse(res, "All active users", httpCode.OK, {
-    users
-  })
-  
-})
-
-export const blockUser = asyncHandler(async (req: RequestWithUser, res: Response) => {
-
-  const userId = req.user._id;
-
-  if(!userId){
-    throw new ValidationError("User not found");
-  }
-
-  const user = await User.findById(userId);
-  if(!user){
-    throw new ValidationError("User not found");
-  }  
-
-  if(user.role!== "admin"){
-    throw new ValidationError("Only admin can access this route");
-  }
-
-  const {blockuserId} = req.params;
-
-  if(!blockuserId){
-    throw new ValidationError("User not found");
-  }
-
-  const userToBlock = await User.findById(blockuserId);
-  if(!userToBlock){
-    throw new ValidationError("User not found");
-  }
-
-  userToBlock.status = "blocked";
-  await userToBlock.save();
-
-  apiSuccessResponse(res, "User blocked successfully", httpCode.OK, {
-    user: userToBlock
-  })  
-
-})
-
-
-export const unblockUser = asyncHandler(async (req: RequestWithUser, res: Response) => {
-
-  const userId = req.user._id;
-
-  if(!userId){
-    throw new ValidationError("User not found");
-  }
-
-  const user = await User.findById(userId);
-  if(!user){
-    throw new ValidationError("User not found");
-  }  
-
-  if(user.role!== "admin"){
-    throw new ValidationError("Only admin can access this route");
-  }
-
-  const {unblokedId} = req.params;
-
-  if(!unblokedId){
-    throw new ValidationError("User not found");
-  }
-
-  const userToUnBlock = await User.findById(unblokedId);
-  if(!userToUnBlock){
-    throw new ValidationError("User not found");
-  }
-
-  userToUnBlock.status = "active";
-  await userToUnBlock.save();
-
-  apiSuccessResponse(res, "User blocked successfully", httpCode.OK, {
-    user: userToUnBlock
-  })  
-
-})
-
+);
 
 export const userLogout = asyncHandler(
   async (req: RequestWithUser, res: Response) => {
@@ -614,13 +610,14 @@ export const userLogout = asyncHandler(
       throw new ValidationError("No token found");
     }
 
-    const isProd = process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+    const isProd =
+      process.env.NODE_ENV === "production" || process.env.RENDER === "true";
     const cookieOptions = {
       httpOnly: true,
       secure: isProd,
       sameSite: "none" as const,
       path: "/",
-       domain: ".muslimcompass.io",
+      domain: ".muslimcompass.io",
     };
 
     // ✅ Clear all relevant cookies (must match how they were set)
@@ -630,7 +627,10 @@ export const userLogout = asyncHandler(
     res.clearCookie("isl_vendor_refresh_token");
     res.clearCookie("isl_admin_access_token", cookieOptions);
     res.clearCookie("isl_admin_refresh_token", cookieOptions);
-    res.clearCookie("isl_session_marker", { ...cookieOptions, httpOnly: false });
+    res.clearCookie("isl_session_marker", {
+      ...cookieOptions,
+      httpOnly: false,
+    });
 
     // ✅ Blacklist current access token
     await BlacklistToken.create({ token });
