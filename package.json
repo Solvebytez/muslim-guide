@@ -23,7 +23,11 @@
     "pm2:logs": "pm2 logs muslim-guide-api",
     "pm2:monit": "pm2 monit",
     "deploy:test": "npm run build && npm run test:all",
-    "deploy:prod": "npm run build && npm run test:all && npm run pm2:restart"
+    "deploy:prod": "npm run build && npm run test:all && npm run pm2:restart",
+    "seed:users": "ts-node src/seed/seed-demo-users.ts",
+    "test:login": "node test-login.js",
+    "check:users": "node check-users.js",
+    "fix:users": "node fix-users.js"
   },
   "keywords": [
     "muslim",

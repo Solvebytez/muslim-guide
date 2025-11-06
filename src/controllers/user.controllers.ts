@@ -156,6 +156,80 @@ export const userLogin = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+export const simpleLogin = asyncHandler(async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ValidationError("Validation Error", errors.array());
+  }
+
+  const { email, password } = req.body;
+
+  const user = await User.findOne({
+    email: email.toLowerCase(),
+    isVerified: true,
+    provider: "local",
+  }).select("+password");
+
+  if (!user) {
+    throw new ValidationError("Invalid email or password");
+  }
+
+  if (!user.password) {
+    throw new ValidationError("Invalid email or password");
+  }
+
+  const isPasswordValid = bcrypt.compareSync(password, user.password);
+  if (!isPasswordValid) {
+    throw new ValidationError("Invalid email or password");
+  }
+
+  if (user.status === "blocked") {
+    throw new ValidationError("User account is blocked");
+  }
+
+  let accesstoken = "";
+  let refreshToken = "";
+
+  if (user.role === "user") {
+    accesstoken = generateToken(
+      { _id: user._id, email: user.email, role: user.role },
+      "isl_user_access_token"
+    );
+    refreshToken = generateToken(
+      { _id: user._id, email: user.email, role: user.role },
+      "isl_user_refresh_token"
+    );
+
+    setTokenCookie(res, "isl_user_access_token", accesstoken);
+    setTokenCookie(res, "isl_user_refresh_token", refreshToken);
+  }
+
+  if (user.role === "vendor") {
+    accesstoken = generateToken(
+      { _id: user._id, email: user.email, role: user.role },
+      "isl_vendor_access_token"
+    );
+    refreshToken = generateToken(
+      { _id: user._id, email: user.email, role: user.role },
+      "isl_vendor_refresh_token"
+    );
+
+    setTokenCookie(res, "isl_vendor_access_token", accesstoken);
+    setTokenCookie(res, "isl_vendor_refresh_token", refreshToken);
+  }
+
+  apiSuccessResponse(res, "User logged in successfully!", httpCode.OK, {
+    accessToken: accesstoken,
+    refreshToken,
+    user: {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+  });
+});
+
 export const userProfile = asyncHandler(
   async (req: RequestWithUser, res: Response) => {
     const userId = req.user._id;
