@@ -454,6 +454,130 @@ export const googleLogin = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
+export const appleLogin = asyncHandler(async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ValidationError("Validation Error", errors.array());
+  }
+  const { signInToken, location } = req.body || {};
+
+  console.log("location", location);
+
+  if (!req.body.signInToken) {
+    return res
+      .status(400)
+      .json({ message: "signInToken is required", success: false });
+  }
+
+  const decoded = jwt.verify(signInToken, config.APP_API_TOKEN) as DecodedToken;
+
+  const geoLocation: { type: "Point"; coordinates: [number, number] } | null =
+    location?.latitude !== undefined && location?.longitude !== undefined
+      ? {
+          type: "Point",
+          coordinates: [location.longitude, location.latitude],
+        }
+      : null;
+
+  if (!decoded) {
+    return res
+      .status(401)
+      .json({ message: "Invalid or expired token", success: false });
+  }
+
+  let user;
+
+  user = await User.findOne({
+    email: decoded.email,
+    provider: "apple",
+  });
+
+  let accesstoken = "";
+  let refreshToken = "";
+
+  if (user) {
+    if (user.provider !== "apple") {
+      return res
+        .status(400)
+        .json({ message: "User already exists", success: false });
+    }
+    if (user.status === "blocked") {
+      return res
+        .status(400)
+        .json({ message: "User is not active", success: false });
+    }
+    if (geoLocation) {
+      user.userLocation = geoLocation;
+      user.address = [
+        location.city,
+        location.region,
+        location.postalCode,
+        location.country,
+      ]
+        .filter(Boolean) // removes undefined or empty strings
+        .join(", ");
+      await user.save();
+    }
+  }
+
+  const { email, name, avatar, role } = decoded;
+
+  if (!user) {
+    console.log("decoded...", decoded);
+    user = await User.create({
+      email,
+      name,
+      provider: "apple",
+      role: role,
+      isVerified: true,
+      userLocation: geoLocation,
+      address: [
+        location.city,
+        location.region,
+        location.postalCode,
+        location.country,
+      ]
+        .filter(Boolean) // removes undefined or empty strings
+        .join(", "),
+    });
+  }
+
+  console.log("user", user);
+
+  if (user.role === "user") {
+    accesstoken = generateToken(
+      { _id: user._id, email, role: user.role },
+      "isl_user_access_token"
+    );
+    refreshToken = generateToken(
+      { _id: user._id, email, role: user.role },
+      "isl_user_refresh_token"
+    );
+
+    setTokenCookie(res, "isl_user_access_token", accesstoken);
+    setTokenCookie(res, "isl_user_refresh_token", refreshToken);
+  }
+  if (user.role === "vendor") {
+    accesstoken = generateToken(
+      { _id: user._id, email, role: user.role },
+      "isl_vendor_access_token"
+    );
+    refreshToken = generateToken(
+      { _id: user._id, email, role: user.role },
+      "isl_vendor_refresh_token"
+    );
+
+    setTokenCookie(res, "isl_vendor_access_token", accesstoken);
+    setTokenCookie(res, "isl_vendor_refresh_token", refreshToken);
+  }
+
+  apiSuccessResponse(res, "User logged in!", httpCode.OK, {
+    accessToken: accesstoken,
+    refreshToken: refreshToken,
+    role: user.role,
+  });
+});
+
 export const refreshToken = asyncHandler(async (req: any, res: Response) => {
   const token = req.cookies.isl_admin_refresh_token;
 
@@ -710,5 +834,55 @@ export const userLogout = asyncHandler(
     await BlacklistToken.create({ token });
 
     apiSuccessResponse(res, "User logged out!", httpCode.OK);
+  }
+);
+
+export const deleteAccount = asyncHandler(
+  async (req: RequestWithUser, res: Response) => {
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new ValidationError("User not found");
+    }
+
+    // Prevent deletion of admin accounts (optional safety measure)
+    if (user.role === "admin") {
+      throw new ValidationError("Admin accounts cannot be deleted");
+    }
+
+    // Delete associated restaurants if user is a vendor
+    if (user.role === "vendor") {
+      await Restaurant.deleteMany({ userId: user._id });
+    }
+
+    // Blacklist all user tokens (optional - for security)
+    // Note: This would require storing all tokens, which may not be practical
+    // For now, we'll just delete the user
+
+    // Delete the user account
+    await User.findByIdAndDelete(userId);
+
+    // Clear cookies
+    const isProd =
+      process.env.NODE_ENV === "production" || process.env.RENDER === "true";
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: "none" as const,
+      path: "/",
+      domain: ".muslimcompass.io",
+    };
+
+    res.clearCookie("isl_user_access_token");
+    res.clearCookie("isl_user_refresh_token");
+    res.clearCookie("isl_vendor_access_token");
+    res.clearCookie("isl_vendor_refresh_token");
+    res.clearCookie("isl_session_marker", {
+      ...cookieOptions,
+      httpOnly: false,
+    });
+
+    apiSuccessResponse(res, "Account deleted successfully", httpCode.OK);
   }
 );

@@ -8,7 +8,9 @@ import {
 import {
   adminLogin,
   allDataOverview,
+  appleLogin,
   blockUser,
+  deleteAccount,
   getActiveUser,
   googleLogin,
   refreshToken,
@@ -35,6 +37,7 @@ router.get("/get-user", isAuthenticated, userProfile);
 router.post("/refresh-token", refreshToken);
 
 router.post("/google-login", googleLogin);
+router.post("/apple-login", appleLogin);
 
 router.get("/data-overview", isAuthenticated, allDataOverview);
 
@@ -45,5 +48,6 @@ router.put("/unblock-user/:unblokedId", isAuthenticated, unblockUser);
 
 router.post("/admin-login", adminLogin);
 router.post("/logout", isAuthenticated, userLogout);
+router.delete("/delete-account", isAuthenticated, deleteAccount);
 
 export const userRoutes = router;
