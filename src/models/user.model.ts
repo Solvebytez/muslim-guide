@@ -37,7 +37,7 @@ const userSchema = new Schema<IUser>({
     },
     provider:{
         type:String,
-        enum:["local","google","facebook"],
+        enum:["local","google","facebook","apple"],
         default:"local"
     },
     phone:{
