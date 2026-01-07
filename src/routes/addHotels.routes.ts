@@ -31,9 +31,9 @@ router.post(
   getPendingHotelsByUser
 );
 router.post("/get-hotels-by-user", isAuthenticated, getApprovedHotels);
+// Allow browsing restaurants without authentication (required by Apple guidelines)
 router.post(
   "/nearest-restaurants",
-  isAuthenticated,
   getNearestRestaurantsSimple
 );
 
@@ -64,7 +64,8 @@ router.put(
   rejectRestaurant
 );
 
-router.get("/all-cuisines", isAuthenticated, getCuisineList);
+// Allow browsing cuisines without authentication (required by Apple guidelines)
+router.get("/all-cuisines", getCuisineList);
 
 router.delete(
   "/delete-restaurant/:restaurantId",

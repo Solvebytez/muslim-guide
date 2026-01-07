@@ -344,16 +344,15 @@ export const getApprovedHotels = asyncHandler(async (req, res, next) => {
 
 
 export const getNearestRestaurantsSimple = asyncHandler(async (req, res, next) => {
-
+  // Make authentication optional - allow guest browsing (required by Apple guidelines)
   const userId = (req as any).user?._id;
-  if (!userId) {
-    throw new ValidationError("User ID is required");
-  }
-
-  const user = await User.findById(userId);
-
-  if (!user) {
-    throw new ValidationError("User not found");
+  
+  // Only validate user if they're authenticated
+  if (userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ValidationError("User not found");
+    }
   }
 
 
