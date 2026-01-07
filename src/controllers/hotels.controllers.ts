@@ -199,14 +199,15 @@ interface CuisineGroups {
   [key: string]: IRestaurant[];
 }
 export const getApprovedHotels = asyncHandler(async (req, res, next) => {
+  // Make authentication optional - allow guest browsing (required by Apple guidelines)
   const userId = (req as any).user?._id;
-  if (!userId) {
-    throw new ValidationError("User ID is required");
-  }
   
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ValidationError("User not found");
+  // Only validate user if they're authenticated
+  if (userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ValidationError("User not found");
+    }
   }
 
   const pageNumber = parseInt(req.body?.pageNumber as string) || 1;
@@ -216,11 +217,14 @@ export const getApprovedHotels = asyncHandler(async (req, res, next) => {
 
   console.log("cuisinsName.....", cuisinsName);
 
-  // Fetch user's wishlist
-  const wishlist = await Wishlist.findOne({ user: userId }).select("restaurants");
-  const wishlistRestaurantIds = new Set(
-    wishlist?.restaurants.map((id) => id.toString()) || []
-  );
+  // Fetch user's wishlist only if authenticated
+  let wishlistRestaurantIds = new Set<string>();
+  if (userId) {
+    const wishlist = await Wishlist.findOne({ user: userId }).select("restaurants");
+    wishlistRestaurantIds = new Set(
+      wishlist?.restaurants.map((id) => id.toString()) || []
+    );
+  }
 
   // Step 1: Fetch approved restaurants with optional cuisine filter
   const query: any = { isApproved: 'approved' };

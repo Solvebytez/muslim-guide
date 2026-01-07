@@ -30,7 +30,8 @@ router.post(
   isAuthenticated,
   getPendingHotelsByUser
 );
-router.post("/get-hotels-by-user", isAuthenticated, getApprovedHotels);
+// Allow browsing hotels by cuisine without authentication (required by Apple guidelines)
+router.post("/get-hotels-by-user", getApprovedHotels);
 // Allow browsing restaurants without authentication (required by Apple guidelines)
 router.post(
   "/nearest-restaurants",
